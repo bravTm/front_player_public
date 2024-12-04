@@ -1,0 +1,65 @@
+{
+    "loading": "Загрузка",
+    "footerText": "Евгений Щербаков, версия = ",
+    "cancel": "Отмена",
+    "settings": {
+        "lang": "Язык",
+        "theme": {
+            "main": "Тема",
+            "dark": "Темная",
+            "light": "Светлая"
+        }
+    },
+    "topMenu": {
+        "Main": "Главная",
+        "Playlists": "Плейлисты",
+        "Settings": "Настройки",
+        "DownloadMusic": "Скачивание"
+    },
+    "permission": {
+        "title": "Требуется разрешение",
+        "text": "Приложению нужно прочитать аудио файлы с устройства",
+        "ready": "Я готов",
+        "cancel": "Отмена"
+    },
+    "music": {
+        "unknownArtist": "Неизвестно",
+        "placeholderSearch": "Поиск",
+        "emptyMusicList": "Список пуст"
+    },
+    "menuMore": {
+        "addToPlaylist": "Добавить в плейлист",
+        "removeFromPlaylist": "Удалить из плейлиста",
+        "shareMusic": "Поделиться",
+        "deleteSong": "Delete Song",
+        "back": "Вернуться"
+    },
+    "addPlaylist": {
+        "openModalTitle": "Добавить плейлист",
+        "inputPlaceholder": "Название",
+        "tapToSelectImageTitle": "Нажмите, чтобы выбрать",
+        "createButtonTitle": "Создать",
+        "isPlaylistAlreadyExistTitle": "Такой плейлист уже существует",
+        "blankFieldException": "Название не может быть пустым"
+    },
+    "singlePlaylistButtonsAndTitles": {
+        "playLine": "По порядку",
+        "playShuffle": "Перемешать",
+        "addSongs": "Добавить песни",
+        "deletePlaylist": "Удалить плейлист",
+        "showSettings": "Показать настройки",
+        "hideSettings": "Скрыть настройки"
+    },
+    "playlists": {
+        "emptyPlaylistList": "Создайте Ваш первый плейлист"
+    },
+    "playSettings": {
+        "popUpTrueRepeatSong": "Повтор песни включен",
+        "popUpFalseRepeatSong": "Повтор песни выключен",
+        "popUpTrueRepeatQueue": "Повтор очереди включен",
+        "popUpFalseRepeatQueue": "Повтор очереди выключен"
+    },
+    "permissionDeletePlaylist": "Точно хотите удалить плейлист?",
+    "permissionRemoveSongFromPlaylist": "Точно хотите удалить песню из плейлиста?",
+    "permissionDeleteSongFromDevice": "Точно хотите удалить песню с устройства?"
+}

@@ -1,0 +1,65 @@
+{
+    "loading": "Loading",
+    "footerText": "Evgeny Shcherbakov, version = ",
+    "cancel": "Cancel",
+    "settings": {
+        "lang": "Language",
+        "theme": {
+            "main": "Theme",
+            "dark": "Dark",
+            "light": "Light"
+        }
+    },
+    "topMenu": {
+        "Main": "Home",
+        "Playlists": "Playlists",
+        "Settings": "Settings",
+        "DownloadMusic": "Download"
+    },
+    "permission": {
+        "title": "Permission is required",
+        "text": "This app needs to read audio files",
+        "ready": "I'm ready",
+        "cancel": "Cancel"
+    },
+    "music": {
+        "unknownArtist": "Unknown",
+        "placeholderSearch": "Search",
+        "emptyMusicList": "List is empty"
+    },
+    "menuMore": {
+        "addToPlaylist": "Add to playlist",
+        "removeFromPlaylist": "Remove from playlist",
+        "shareMusic": "Share",
+        "deleteSong": "Delete Song",
+        "back": "Back"
+    },
+    "addPlaylist": {
+        "openModalTitle": "Create new Playlist",
+        "inputPlaceholder": "Title",
+        "tapToSelectImageTitle": "Tap to select",
+        "createButtonTitle": "Create",
+        "isPlaylistAlreadyExistTitle": "Playlist, like this, is already exist",
+        "blankFieldException": "Title can't be blank"
+    },
+    "singlePlaylistButtonsAndTitles": {
+        "playLine": "Play All",
+        "playShuffle": "Shuffle",
+        "addSongs": "Add Songs",
+        "deletePlaylist": "Delete Playlist",
+        "showSettings": "Show settings",
+        "hideSettings": "Hide settings"
+    },
+    "playlists": {
+        "emptyPlaylistList": "Create your first playlist"
+    },
+    "playSettings": {
+        "popUpTrueRepeatSong": "Song repeat is on",
+        "popUpFalseRepeatSong": "Song repeat is off",
+        "popUpTrueRepeatQueue": "Song queue is on",
+        "popUpFalseRepeatQueue": "Song queue is off"
+    },
+    "permissionDeletePlaylist": "Are you sure you want to delete the playlist?",
+    "permissionRemoveSongFromPlaylist": "Are you sure you want to remove a song from the playlist?",
+    "permissionDeleteSongFromDevice": "Are you sure you want to remove a song from the device?"
+}

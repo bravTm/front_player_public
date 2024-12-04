@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "Shcherbakov Player",
+    "slug": "SPlayer",
+    "version": "1.0.0",
+    "web": {
+      "favicon": "./assets/LOGO.png"
+    },
+    "newArchEnabled": true,
+    "experiments": {
+      "tsconfigPaths": true
+    },
+    "plugins": [
+      "expo-localization",
+      "expo-secure-store",
+      "expo-background-fetch",
+      "expo-task-manager"
+    ],
+    "orientation": "portrait",
+    "icon": "./assets/LOGO.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/ShortTitlePlayerBlack.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/LOGO.png",
+        "backgroundColor": "#000000"
+      }
+    }
+  }
+}
