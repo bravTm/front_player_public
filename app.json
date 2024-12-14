@@ -3,37 +3,41 @@
     "name": "Shcherbakov Player",
     "slug": "SPlayer",
     "version": "1.0.0",
-    "web": {
-      "favicon": "./assets/LOGO.png"
-    },
-    "newArchEnabled": true,
-    "experiments": {
-      "tsconfigPaths": true
-    },
-    "plugins": [
-      "expo-localization",
-      "expo-secure-store",
-      "expo-background-fetch",
-      "expo-task-manager"
-    ],
     "orientation": "portrait",
     "icon": "./assets/LOGO.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/ShortTitlePlayerBlack.png",
+      "image": "./assets/LOGO.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "web": {
+      "favicon": "./assets/LOGO.png"
+    },
+    "experiments": {
+      "tsconfigPaths": true
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.brav.SPlayer"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/LOGO.png",
         "backgroundColor": "#000000"
+      },
+      "package": "com.brav.SPlayer"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "934e772d-8fbb-4814-a0fc-527ff7fc6185"
       }
     }
   }

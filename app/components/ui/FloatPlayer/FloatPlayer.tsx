@@ -12,8 +12,9 @@ import { Marquee } from '@animatereactnative/marquee';
 import { width } from 'app/utils/constants'
 import { MaterialIcons } from '@expo/vector-icons'
 import { removeSitesFromTitle } from 'app/utils/removeSitesFromTitle'
-import getArtistTitle from 'get-artist-title'
+// import getArtistTitle from 'get-artist-title'
 import { pause, resume } from '../AudioList/audio.methods'
+import { getArtistAndTitle } from 'app/utils/getArtistAndTitle'
 
 
 const FloatPlayer: FC = () => {
@@ -32,14 +33,17 @@ const FloatPlayer: FC = () => {
     // @ts-ignore
     const filename = currentAudio.filename.slice(0, currentAudio.filename.lastIndexOf("."))
     // @ts-ignore
-    let [ artist, title ] = getArtistTitle(filename, {
-        defaultArtist: i18n.t("music.unknownArtist")
-    })
+    // let [ artist, title ] = getArtistTitle(filename, {
+    //     defaultArtist: i18n.t("music.unknownArtist")
+    // })
 
-    title = removeSitesFromTitle(title)
-    // if(title.length >= 26) title = title.slice(0, 26) + "..." 
+    let { artist, title } = getArtistAndTitle(filename, i18n.t("music.unknownArtist"))
+
+    // title = removeSitesFromTitle(title)
     if(artist.length > 26) artist = artist.slice(0, 26) + "..."
 
+
+    
     const onStopOrPlayMusic = async () => {
         // @ts-ignore
         if(isPlaying) await pause(playbackObj, changeSoundObj, changeIsPlaying)

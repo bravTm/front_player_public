@@ -9,8 +9,9 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { width } from 'app/utils/constants'
 import { removeSitesFromTitle } from 'app/utils/removeSitesFromTitle'
 import formatDuration from 'format-duration'
-import getArtistTitle from 'get-artist-title'
+// import getArtistTitle from 'get-artist-title'
 import cn from "clsx"
+import { getArtistAndTitle } from 'app/utils/getArtistAndTitle'
 
 
 interface IAddPlaylistAudioItem {
@@ -30,11 +31,13 @@ const AddPlaylistAudioItem: FC<IAddPlaylistAudioItem> = memo(({ item, activeId, 
     const duration = formatDuration(item.duration * 1000)
     const filename = item.filename.slice(0, item.filename.lastIndexOf("."))
     // @ts-ignore
-    let [ artist, title ] = getArtistTitle(filename, {
-        defaultArtist: i18n.t("music.unknownArtist")
-    })
+    // let [ artist, title ] = getArtistTitle(filename, {
+    //     defaultArtist: i18n.t("music.unknownArtist")
+    // })
 
-    title = removeSitesFromTitle(title)
+    let { artist, title } = getArtistAndTitle(filename, i18n.t("music.unknownArtist"))
+
+    // title = removeSitesFromTitle(title)
     if(title.length >= 26) title = title.slice(0, 26) + "..." 
     if(artist.length > 26) artist = artist.slice(0, 26) + "..."
 

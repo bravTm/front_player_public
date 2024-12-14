@@ -1,4 +1,5 @@
 import './global.css';
+import './reanimatedConfig';
 import { ViewStyle } from 'react-native';
 import Navigation from 'app/navigate/Navigation';
 import { SafeAreaProvider } from 'react-native-safe-area-context';

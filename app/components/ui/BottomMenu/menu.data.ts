@@ -12,11 +12,6 @@ export const menuItems: IMenuItem[] = [
     },
     
     {
-        iconName: 'download',
-        path: 'DownloadMusic'
-    },
-    
-    {
         iconName: 'settings',
         path: 'Settings'
     },

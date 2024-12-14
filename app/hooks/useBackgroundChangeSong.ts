@@ -4,8 +4,8 @@ import { useAudioPlay } from "./useAudioPlay"
 import { usePlaylists } from "./usePlaylists"
 import { usePlaySettings } from "./usePlaySettings"
 import { useSongs } from "./useSongs"
-import * as BackgroundFetch from 'expo-background-fetch';
-import * as TaskManager from 'expo-task-manager';
+// import * as BackgroundFetch from 'expo-background-fetch';
+// import * as TaskManager from 'expo-task-manager';
 
 
 export const BACKGROUND_FETCH_TASK = 'change-song';
@@ -66,27 +66,27 @@ export const useBackgroundChangeSong = async () => {
 
 
 
-    TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-        console.log("HERE")
-        await changeSong()
-        return BackgroundFetch.BackgroundFetchResult.NewData;
-    });
+    // TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+    //     console.log("HERE")
+    //     await changeSong()
+    //     return BackgroundFetch.BackgroundFetchResult.NewData;
+    // });
 
 
-    async function registerBackgroundFetchAsync() {
-        return await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-            minimumInterval: 2, // 10 seconds
-            stopOnTerminate: false, // android only,
-            startOnBoot: true, // android only
-        });
-    }
+    // async function registerBackgroundFetchAsync() {
+    //     return await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+    //         minimumInterval: 2, // 10 seconds
+    //         stopOnTerminate: false, // android only,
+    //         startOnBoot: true, // android only
+    //     });
+    // }
 
-    async function unregisterBackgroundFetchAsync() {
-        return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
-    }
+    // async function unregisterBackgroundFetchAsync() {
+    //     return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
+    // }
 
-    return {
-        registerBackgroundFetchAsync,
-        unregisterBackgroundFetchAsync
-    }
+    // return {
+    //     registerBackgroundFetchAsync,
+    //     unregisterBackgroundFetchAsync
+    // }
 }

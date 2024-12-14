@@ -6,24 +6,24 @@ import { usePlaylists } from 'app/hooks/usePlaylists'
 import { usePlaySettings } from 'app/hooks/usePlaySettings'
 import { useLang } from 'app/hooks/useLang'
 
-import * as BackgroundFetch from 'expo-background-fetch';
-import * as TaskManager from 'expo-task-manager';
+// import * as BackgroundFetch from 'expo-background-fetch';
+// import * as TaskManager from 'expo-task-manager';
 // import MusicControl from 'react-native-music-control';
 
 import { Audio, InterruptionModeAndroid } from 'expo-av'
 import { pause, playNext } from 'app/components/ui/AudioList/audio.methods'
 import { getPermission } from './permissions-functions'
 import { loadPlaylists, loadPlaySettings, loadPreviousSong } from './loading-functions'
-import { BACKGROUND_FETCH_TASK, useBackgroundChangeSong } from 'app/hooks/useBackgroundChangeSong'
+// import { BACKGROUND_FETCH_TASK, useBackgroundChangeSong } from 'app/hooks/useBackgroundChangeSong'
 
 
-async function registerBackgroundFetchAsync() {
-    return await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-        minimumInterval: 2, // 10 seconds
-        stopOnTerminate: false, // android only,
-        startOnBoot: true, // android only
-    });
-}
+// async function registerBackgroundFetchAsync() {
+//     return await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+//         minimumInterval: 2, // 10 seconds
+//         stopOnTerminate: false, // android only,
+//         startOnBoot: true, // android only
+//     });
+// }
 
 
 const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -34,7 +34,7 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
     const { isRepeatQueue, isRepeatSong } = usePlaySettings()
     const { i18n } = useLang()
 
-    useBackgroundChangeSong()
+    // useBackgroundChangeSong()
 
     const updatePlaybackStatus = useCallback(async () => {
         await Audio.setAudioModeAsync({
@@ -96,14 +96,14 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
 
 
 
-    useEffect(() => {
-        const register = async () => {
-            await registerBackgroundFetchAsync();
-            await BackgroundFetch.setMinimumIntervalAsync(600);
-        }
+    // useEffect(() => {
+    //     const register = async () => {
+    //         await registerBackgroundFetchAsync();
+    //         await BackgroundFetch.setMinimumIntervalAsync(600);
+    //     }
         
-        register()
-    }, [isPlaying, playbackObj]);
+    //     register()
+    // }, [isPlaying, playbackObj]);
 
 
 

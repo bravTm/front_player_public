@@ -108,9 +108,9 @@ const AudioList: FC<IAudioList> = ({ songs, type="simple" }) => {
             <FlatList 
                 removeClippedSubviews
                 // @ts-ignore
-                // data={searchText.length > 1 ? searchSongs : songsRender}
+                data={searchText.length > 1 ? searchSongs : songsRender}
                 // data={songsRender}
-                data={searchSongs}
+                // data={searchSongs}
                 initialNumToRender={10}
                 windowSize={1}
                 keyExtractor={item => item.id.toString()}

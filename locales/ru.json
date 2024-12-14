@@ -34,6 +34,9 @@
         "deleteSong": "Delete Song",
         "back": "Вернуться"
     },
+    "musicPlayer": {
+        "goToLyricsLink": "Текст песни"
+    },
     "addPlaylist": {
         "openModalTitle": "Добавить плейлист",
         "inputPlaceholder": "Название",
@@ -58,6 +61,9 @@
         "popUpFalseRepeatSong": "Повтор песни выключен",
         "popUpTrueRepeatQueue": "Повтор очереди включен",
         "popUpFalseRepeatQueue": "Повтор очереди выключен"
+    },
+    "karaokeLyrics": {
+        "notFoundLyrics": "Текст не найден"
     },
     "permissionDeletePlaylist": "Точно хотите удалить плейлист?",
     "permissionRemoveSongFromPlaylist": "Точно хотите удалить песню из плейлиста?",

@@ -1,5 +1,5 @@
 import AddSongsToPlaylist from "app/components/screen/AddSongsToPlaylist/AddSongsToPlaylist";
-import DownloadMusic from "app/components/screen/DownloadMusic/DownloadMusic";
+import KaraokeLyrics from "app/components/screen/KaraokeLyrics/KaraokeLyrics";
 import Main from "app/components/screen/Main/Main";
 import Player from "app/components/screen/Player/Player";
 import Playlists from "app/components/screen/Playlists/Playlists";
@@ -32,7 +32,7 @@ export const routes = [
 		component: AddSongsToPlaylist,
 	},
 	{
-		name: 'DownloadMusic',
-		component: DownloadMusic,
+		name: 'KaraokeLyrics',
+		component: KaraokeLyrics,
 	},
 ]

@@ -16,7 +16,7 @@ import PlayerButton from './PlayerButton'
 import { Marquee } from '@animatereactnative/marquee'
 import { MaterialIcons } from '@expo/vector-icons'
 
-import getArtistTitle from 'get-artist-title'
+// import getArtistTitle from 'get-artist-title'
 import formatDuration from 'format-duration'
 import { width } from 'app/utils/constants'
 import { removeSitesFromTitle } from 'app/utils/removeSitesFromTitle'
@@ -24,12 +24,20 @@ import { pause, playFromPosition, playNext, resume } from 'app/components/ui/Aud
 import { setAsyncStorage } from 'app/utils/storage'
 import { IPlaySettings } from 'app/types/play-settings.types'
 import { showToast } from 'app/utils/toastShow'
+import { getArtistAndTitle } from 'app/utils/getArtistAndTitle'
 
 const Player: FC = memo(() => {
+
+    // "plugins": [
+    //   "expo-localization",
+    //   "expo-secure-store"
+    // ],    из app.json
+
+    
     const [isBlur, setIsBlur] = useState(false)
     const { i18n } = useLang()
     const { colorScheme } = useColorScheme()
-    const { goBack } = useTypedNavigation()
+    const { goBack, navigate } = useTypedNavigation()
 
     const { currentAudio, isPlaying, playbackObj } = useAudioPlay()
     const { totalCount, songs } = useSongs()
@@ -51,19 +59,23 @@ const Player: FC = memo(() => {
         return 0
     }
 
+    // @ts-ignore
     let currentIndex = songs.findIndex(el => el.id == (currentAudio as any).id)
     if(orderToPlay.length != [] as any) {
+        // @ts-ignore
         currentIndex = orderToPlay.findIndex(el => el.id == (currentAudio as any).id)
     }
 
     // @ts-ignore
     const filename = currentAudio.filename.slice(0, currentAudio.filename.lastIndexOf("."))
     // @ts-ignore
-    let [ artist, title ] = getArtistTitle(filename, {
-        defaultArtist: i18n.t("music.unknownArtist")
-    })
+    // let [ artist, title ] = getArtistTitle(filename, {
+    //     defaultArtist: i18n.t("music.unknownArtist")
+    // })
 
-    title = removeSitesFromTitle(title)
+    let { artist, title } = getArtistAndTitle(filename, i18n.t("music.unknownArtist"))
+
+    // title = removeSitesFromTitle(title)
     if(artist.length > 50) artist = artist.slice(0, 50) + "..."
 
 
@@ -166,6 +178,10 @@ const Player: FC = memo(() => {
                 />
             </TouchableOpacity>
 
+            <Text className='dark:text-gray-300  text-dark text-lg' onPress={() => navigate("KaraokeLyrics")}>
+                {i18n.t("musicPlayer.goToLyricsLink")}
+            </Text>
+
             <Text className='dark:text-light text-dark text-right mr-[5%]'>
                 {`${currentIndex + 1} / ${orderToPlay?.length != 0 ? orderToPlay?.length : totalCount}`}
             </Text>
@@ -221,8 +237,7 @@ const Player: FC = memo(() => {
                 minimumTrackTintColor={colorScheme == 'dark' ? "#ffe600" : "#4287f5"}
                 maximumTrackTintColor={colorScheme == 'dark' ?  "#FFFFFF" : "#000000"}
                 thumbTintColor={colorScheme == 'dark' ? "#ffe600" : "#4287f5"}
-                // onValueChange={seekBarChangePlayback}
-                onSlidingComplete={seekBarChangePlayback} // когда перемотка закончилась
+                onSlidingComplete={seekBarChangePlayback}
             />
 
             <View className='justify-between items-center flex-row mx-[2%] opacity-60'>

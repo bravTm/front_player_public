@@ -3,8 +3,8 @@ import { IAudioPlay } from "app/store/audioPlay/audioPlay.slice";
 import { IReduxPlayback } from "app/store/playback/playback.slice";
 import { IPlaylist } from "app/types/playlists.types";
 import { ISong } from "app/types/song.types"
-import { setAsyncStorage, setStorage } from "app/utils/storage";
-import { Audio, AVPlaybackStatus, InterruptionModeAndroid } from "expo-av"
+import { setAsyncStorage } from "app/utils/storage";
+import { Audio, AVPlaybackStatus } from "expo-av"
 
 
 type TchangePlaybackObj = ActionCreatorWithPayload<
@@ -44,8 +44,16 @@ export const play = async (
     audio: ISong, changeState: TchangeState, songs: ISong[], setPlayback: TsetPlayback, setActivePlstAndIsShuffle?: TsetActivePlstAndIsShuffle, playlists?: IPlaylist[], playlistTitle?: string
 ) => {
     try {
+        let initialVolume = 0.1, step = 0.1
+
         const playbackObject = new Audio.Sound()
-        const status = await playbackObject.loadAsync({ uri: audio.uri }, { shouldPlay: true })
+        const status = await playbackObject.loadAsync({ uri: audio.uri }, { shouldPlay: true, volume: initialVolume })
+
+        const inter = setInterval(() => {
+            playbackObject?.setVolumeAsync(initialVolume + step, 0)
+            initialVolume += step
+        }, 300)
+
         
         setPlayback({ playbackDuration: 1, playbackPosition: 0 })
 
@@ -79,6 +87,8 @@ export const play = async (
                 orderToPlay: plst[0]?.songs as any
             })
         }
+
+        // return clearInterval(inter)
         return
     } catch(error) {
         console.log("ERROR PLAY", error)
@@ -92,6 +102,7 @@ export const pause = async (
     // pause audio
     try {
         const status = await playbackObj?.setStatusAsync({ shouldPlay: false })
+
         changeSoundObj(status as any)
         changeIsPlaying(false)
         return
@@ -104,11 +115,21 @@ export const pause = async (
 export const resume = async (
     playbackObj: Audio.Sound | null, changeSoundObj: TchangeSoundObj, changeIsPlaying: TchangeIsPlaying
 ) => {
-    //resume audio
     try {
+        let initialVolume = 0.1, step = 0.1
+
+        playbackObj?.setVolumeAsync(initialVolume) // изначально volume = 0
         const status = await playbackObj?.playAsync()
+
+        setInterval(() => {
+            playbackObj?.setVolumeAsync(initialVolume + step, 0)
+            initialVolume += step
+        }, 300)
+        
         changeSoundObj(status as any)
         changeIsPlaying(true)
+
+        // return clearInterval(inter)
         return
     } catch(error) {
         console.log("ERROR RESUME", error)

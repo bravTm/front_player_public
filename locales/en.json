@@ -34,6 +34,9 @@
         "deleteSong": "Delete Song",
         "back": "Back"
     },
+    "musicPlayer": {
+        "goToLyricsLink": "Go to Lyrics"
+    },
     "addPlaylist": {
         "openModalTitle": "Create new Playlist",
         "inputPlaceholder": "Title",
@@ -58,6 +61,9 @@
         "popUpFalseRepeatSong": "Song repeat is off",
         "popUpTrueRepeatQueue": "Song queue is on",
         "popUpFalseRepeatQueue": "Song queue is off"
+    },
+    "karaokeLyrics": {
+        "notFoundLyrics": "Lyrics not found"
     },
     "permissionDeletePlaylist": "Are you sure you want to delete the playlist?",
     "permissionRemoveSongFromPlaylist": "Are you sure you want to remove a song from the playlist?",
