@@ -1,47 +1,30 @@
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
-import { IAudioPlay } from "app/store/audioPlay/audioPlay.slice";
-import { IReduxPlayback } from "app/store/playback/playback.slice";
 import { IPlaylist } from "app/types/playlists.types";
 import { ISong } from "app/types/song.types"
 import { setAsyncStorage } from "app/utils/storage";
 import { Audio, AVPlaybackStatus } from "expo-av"
 
 
-type TchangePlaybackObj = ActionCreatorWithPayload<
-    (payload: Audio.Sound) => {
-        payload: Audio.Sound;
-        type: "audioPlay/changePlaybackObj";
-    }>
 
-type TchangeSoundObj = ActionCreatorWithPayload<
-    (payload: AVPlaybackStatus) => {
-        payload: AVPlaybackStatus;
-        type: "audioPlay/changeSoundObj";
-    }>
+type TsetSoungObj = React.Dispatch<React.SetStateAction<any>>
+
+type TsetIsPlaying = React.Dispatch<React.SetStateAction<boolean>>
+
+type TsetPlaybackPosition = React.Dispatch<React.SetStateAction<number>>
+type TsetPlaybackDuration = React.Dispatch<React.SetStateAction<number>>
 
 
-type TchangeCurrentAudio = ActionCreatorWithPayload<
-    (payload: ISong) => {
-        payload: ISong;
-        type: "audioPlay/changeCurrentAudio";
-    }>
+type TchangeState = (playbackObj: Audio.Sound, soundObj: AVPlaybackStatus, currentAudio: ISong, isPlaying: boolean, currentIndex: number) => void
 
 
-type TchangeState = ActionCreatorWithPayload<IAudioPlay, "audioPlay/changeState">
 
-type TchangeIsPlaying = ActionCreatorWithPayload<boolean, "audioPlay/changeIsPlaying">
+type TsetActivePlstAndIsShuffle =  (activePlaylist: IPlaylist, isShuffle: boolean, orderToPlay: ISong[]) => void
 
-type TsetPlayback = ActionCreatorWithPayload<IReduxPlayback, "playback/setPlayback">
-
-type TsetActivePlstAndIsShuffle = ActionCreatorWithPayload<{
-    activePlaylist: IPlaylist | null;
-    isShuffle: boolean;
-    orderToPlay: ISong[];
-}, "playlists/setActivePlstAndIsShuffle">
 
 
 export const play = async (
-    audio: ISong, changeState: TchangeState, songs: ISong[], setPlayback: TsetPlayback, setActivePlstAndIsShuffle?: TsetActivePlstAndIsShuffle, playlists?: IPlaylist[], playlistTitle?: string
+    audio: ISong, changeState: TchangeState, songs: ISong[], setPlaybackPosition: TsetPlaybackPosition, 
+    setPlaybackDuration: TsetPlaybackDuration,  setActivePlstAndIsShuffle?: TsetActivePlstAndIsShuffle, playlists?: IPlaylist[], playlistTitle?: string
 ) => {
     try {
         let initialVolume = 0.1, step = 0.1
@@ -55,37 +38,32 @@ export const play = async (
         }, 300)
 
         
-        setPlayback({ playbackDuration: 1, playbackPosition: 0 })
+        setPlaybackPosition(0)
+        setPlaybackDuration(1)
 
         const currentIndex = songs.findIndex(el => el.id == (audio as any).id)
         
-        changeState({
-            playbackObj: playbackObject,
-            soundObj: status,
-            currentAudio: audio,
-            isPlaying: true,
-            currentIndex: currentIndex 
-        })
+        changeState(
+            playbackObject,
+            status,
+            audio,
+            true,
+            currentIndex 
+        )
         
         setAsyncStorage("previousAudio", JSON.stringify({ audio, index: currentIndex }))
         
         if(playlistTitle == undefined && !!setActivePlstAndIsShuffle) {
-            setActivePlstAndIsShuffle({
-                activePlaylist: null,
-                isShuffle: false,
-                orderToPlay: []
-            })
+            setActivePlstAndIsShuffle(null as any, false, [])
         }
         else if(playlistTitle != undefined && !!setActivePlstAndIsShuffle && !!playlists) {
             let plst = playlists.map((item) => {
                 if(item.title == item.title) return item
             })
+            
             if(plst.length == 0) return
-            setActivePlstAndIsShuffle({
-                activePlaylist: plst[0] as any,
-                isShuffle: false,
-                orderToPlay: plst[0]?.songs as any
-            })
+
+            setActivePlstAndIsShuffle(plst[0] as any, false, plst[0]?.songs as any)
         }
 
         // return clearInterval(inter)
@@ -97,14 +75,14 @@ export const play = async (
 
 
 export const pause = async (
-    playbackObj: Audio.Sound | null, changeSoundObj: TchangeSoundObj, changeIsPlaying: TchangeIsPlaying
+    playbackObj: Audio.Sound | null, setSoungObj: TsetSoungObj, setIsPlaying: TsetIsPlaying
 ) => {
     // pause audio
     try {
         const status = await playbackObj?.setStatusAsync({ shouldPlay: false })
 
-        changeSoundObj(status as any)
-        changeIsPlaying(false)
+        setSoungObj(status)
+        setIsPlaying(false)
         return
     } catch(error) {
         console.log("ERROR PAUSE", error)
@@ -113,7 +91,7 @@ export const pause = async (
 
 
 export const resume = async (
-    playbackObj: Audio.Sound | null, changeSoundObj: TchangeSoundObj, changeIsPlaying: TchangeIsPlaying
+    playbackObj: Audio.Sound | null, setSoungObj: TsetSoungObj, setIsPlaying: TsetIsPlaying
 ) => {
     try {
         let initialVolume = 0.1, step = 0.1
@@ -126,8 +104,8 @@ export const resume = async (
             initialVolume += step
         }, 300)
         
-        changeSoundObj(status as any)
-        changeIsPlaying(true)
+        setSoungObj(status as any)
+        setIsPlaying(true)
 
         // return clearInterval(inter)
         return
@@ -139,14 +117,15 @@ export const resume = async (
 
 
 export const playNext = async (
-    playbackObj: Audio.Sound | null, audio: ISong, changeState: TchangeState, songs: ISong[], setPlayback: TsetPlayback, setActivePlstAndIsShuffle?: TsetActivePlstAndIsShuffle, playlists?: IPlaylist[], playlistTitle?: string
+    playbackObj: Audio.Sound | null, audio: ISong, changeState: TchangeState, songs: ISong[], setPlaybackPosition: TsetPlaybackPosition, 
+    setPlaybackDuration: TsetPlaybackDuration, setActivePlstAndIsShuffle?: TsetActivePlstAndIsShuffle, playlists?: IPlaylist[], playlistTitle?: string
 ) => {
     // playing audio for the first time
     try {
         await playbackObj?.stopAsync()
         await playbackObj?.unloadAsync()
 
-        play(audio, changeState, songs, setPlayback, setActivePlstAndIsShuffle, playlists, playlistTitle)
+        play(audio, changeState, songs, setPlaybackPosition, setPlaybackDuration, setActivePlstAndIsShuffle, playlists, playlistTitle)
         return
     } catch(error) {
         console.log("ERROR PLAYNEXT", error)

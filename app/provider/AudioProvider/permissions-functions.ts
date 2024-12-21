@@ -3,13 +3,15 @@ import * as MediaLibrary from "expo-media-library"
 import { I18n } from "i18n-js"
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit"
 import { IReduxSongs } from "app/store/songs/songs.slice"
+import { ISong } from "app/types/song.types"
 
 
-type typeInitialize = ActionCreatorWithPayload<IReduxSongs, "songs/initialize">
+type setSongsType = React.Dispatch<React.SetStateAction<ISong[]>>
+type setTotalCountType = React.Dispatch<React.SetStateAction<number>>
 
 
 // -------------- START SECTION: PERMISSION/GET AUDIOS FROM DEVICE -------------
-const getAudioFiles = async (initialize: typeInitialize) => {
+const getAudioFiles = async (setSongs: setSongsType, setTotalCount: setTotalCountType) => {
   let media = await MediaLibrary.getAssetsAsync({
     mediaType: "audio",
     sortBy: "modificationTime"
@@ -21,32 +23,33 @@ const getAudioFiles = async (initialize: typeInitialize) => {
     sortBy: "modificationTime"
   })
 
-  initialize({ songs: media.assets, totalCount: media.totalCount })
+  setSongs(media.assets as any)
+  setTotalCount(media.totalCount)
 }
 
 
-const permissionAlert = (i18n: I18n, initialize: typeInitialize) => {
+const permissionAlert = (i18n: I18n, setSongs: setSongsType, setTotalCount: setTotalCountType) => {
   Alert.alert(i18n.t("permission.title"), i18n.t("permission.text"), 
     [{
       text: i18n.t("permission.ready"),
-      onPress: () => getPermission(i18n, initialize)
+      onPress: () => getPermission(i18n, setSongs, setTotalCount)
     }, 
     {
       text: i18n.t("permission.cancel"),
-      onPress: () => permissionAlert(i18n, initialize)
+      onPress: () => permissionAlert(i18n, setSongs, setTotalCount)
     }]
   )
 }
 
 
-export const getPermission = async (i18n: I18n, initialize: typeInitialize) => {
+export const getPermission = async (i18n: I18n, setSongs: setSongsType, setTotalCount: setTotalCountType) => {
   // {"accessPrivileges": "none", "canAskAgain": true, "expires": "never", "granted": false, "status": "undetermined"}
   const permission = await MediaLibrary.getPermissionsAsync()
   
 
   if(permission.granted) {
       // we want to get all the audio files
-      getAudioFiles(initialize)
+      getAudioFiles(setSongs, setTotalCount)
   }
 
   if(!permission.granted && permission.canAskAgain) {
@@ -54,11 +57,11 @@ export const getPermission = async (i18n: I18n, initialize: typeInitialize) => {
 
     if(status === 'denied' && canAskAgain) {
       // we are going to display alert that user must allow this permission to work this app
-      permissionAlert(i18n, initialize)
+      permissionAlert(i18n, setSongs, setTotalCount)
     } 
 
     if(status === 'granted') {
-      getAudioFiles(initialize)
+      getAudioFiles(setSongs, setTotalCount)
     }
 
     if(status === 'denied' && !canAskAgain) {

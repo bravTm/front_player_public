@@ -1,10 +1,7 @@
 import { FC, memo, useState } from 'react'
 import { Alert, Text, View } from 'react-native'
-import { usePlaylists } from 'app/hooks/usePlaylists'
 import { useTypedRoute } from 'app/hooks/useTypedRoute'
 import { useTypedNavigation } from 'app/hooks/useTypedNavigation'
-import { useActions } from 'app/hooks/useActions'
-import { useAudioPlay } from 'app/hooks/useAudioPlay'
 import { useLang } from 'app/hooks/useLang'
 
 import AudioList from 'app/components/ui/AudioList/AudioList'
@@ -14,10 +11,12 @@ import ChangeTitleForm from './ChangeTitleForm'
 import PlaylistButton from './PlaylistButton'
 
 import { width } from 'app/utils/constants'
-import formatDuration from 'format-duration'
 import { shuffleArray } from 'app/utils/shuffle'
 import { playNext } from 'app/components/ui/AudioList/audio.methods'
 import { setAsyncStorage } from 'app/utils/storage'
+import { usePlaybackAndAudioPlay } from 'app/hooks/usePlaybackAndAudioPlay'
+import { usePlaylists } from 'app/hooks/usePlaylists'
+import { formatDuration } from 'app/utils/formatDuration'
 
 
 const SinglePlaylist: FC = memo(() => {
@@ -25,7 +24,7 @@ const SinglePlaylist: FC = memo(() => {
     const title = useTypedRoute()?.params?.title
     // if(!title) return null
     
-    const { playlists } = usePlaylists()
+    const { playlists, setActivePlstAndIsShuffle, setPlaylists } = usePlaylists()
     // if(playlists?.length == 0) return null
     
     let plst = playlists?.map((item) => {
@@ -46,8 +45,8 @@ const SinglePlaylist: FC = memo(() => {
     const [value, setValue] = useState(title || "") as any
     const { i18n } = useLang()
     const { navigate } = useTypedNavigation()
-    const { playbackObj } = useAudioPlay()
-    const { setActivePlstAndIsShuffle, changeState, setPlayback, setPlaylists } = useActions()
+    const { playbackObj, setPlaybackPosition, setPlaybackDuration, changeState } = usePlaybackAndAudioPlay()
+
     let time = formatDuration(0)
 
     if(!!playlist) {
@@ -85,19 +84,19 @@ const SinglePlaylist: FC = memo(() => {
             order.push(playlist?.songs[shuffledIndexes[i]])
         }
         
-        setActivePlstAndIsShuffle({
-            activePlaylist: playlist,
-            isShuffle: type == 'shuffle',
-            orderToPlay: type == 'line' ? playlist?.songs : order
-        })
+        setActivePlstAndIsShuffle(
+            playlist,
+            type == 'shuffle',
+            type == 'line' ? playlist?.songs : order
+        )
 
 
         if(order.length > 0) {
             if(type == 'line') {
-                playNext(playbackObj, playlist?.songs[0], changeState, playlist?.songs, setPlayback)
+                playNext(playbackObj, playlist?.songs[0], changeState, playlist?.songs, setPlaybackPosition, setPlaybackDuration)
             }
             else {
-                playNext(playbackObj,  order[0], changeState, playlist?.songs, setPlayback)
+                playNext(playbackObj,  order[0], changeState, playlist?.songs, setPlaybackPosition, setPlaybackDuration)
             }
         }
     }

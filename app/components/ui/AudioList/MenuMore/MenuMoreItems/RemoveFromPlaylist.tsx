@@ -1,7 +1,5 @@
 import { FC, memo } from 'react'
 import { Alert, Text, TouchableOpacity, View } from 'react-native'
-import { usePlaylists } from 'app/hooks/usePlaylists'
-import { useActions } from 'app/hooks/useActions'
 import { useColorScheme } from 'nativewind'
 
 import { MaterialIcons } from '@expo/vector-icons'
@@ -11,8 +9,8 @@ import { TypeMaterialIconNames } from 'app/types/icon.types'
 import { ISong } from 'app/types/song.types'
 import { setAsyncStorage } from 'app/utils/storage'
 import { useTypedRoute } from 'app/hooks/useTypedRoute'
-import { useTypedNavigation } from 'app/hooks/useTypedNavigation'
 import { useLang } from 'app/hooks/useLang'
+import { usePlaylists } from 'app/hooks/usePlaylists'
 
 interface IRemoveFromPlaylist {
     icon: TypeMaterialIconNames
@@ -28,8 +26,7 @@ const RemoveFromPlaylist: FC<IRemoveFromPlaylist> = memo(({ icon, title, song, s
     const playlistTitle = useTypedRoute()?.params?.title
     const { colorScheme } = useColorScheme()
     const { i18n } = useLang()
-    const { playlists } = usePlaylists()
-    const { setPlaylists } = useActions()
+    const { playlists, setPlaylists } = usePlaylists()
 
     const removeFromPlaylist = () => {
         const newPlaylists = playlists.map((item) => {

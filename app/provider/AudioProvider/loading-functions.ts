@@ -1,15 +1,12 @@
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit"
-import { IAudioPlay } from "app/store/audioPlay/audioPlay.slice"
 import { IPlaySettings } from "app/types/play-settings.types"
 import { IPlaylist } from "app/types/playlists.types"
 import { ISong } from "app/types/song.types"
 import { getAsyncStorage } from "app/utils/storage"
-import { Audio } from "expo-av"
+import { Audio, AVPlaybackStatus } from "expo-av"
 
 
-type typeChangeState = ActionCreatorWithPayload<IAudioPlay, "audioPlay/changeState">
-type typeSetPlaylists = ActionCreatorWithPayload<IPlaylist[], "playlists/setPlaylists">
-type typeSetPlaySettings = ActionCreatorWithPayload<IPlaySettings, "playSettings/setPlaySettings">
+type typeChangeState = (playbackObj: Audio.Sound, soundObj: AVPlaybackStatus, currentAudio: ISong, isPlaying: boolean, currentIndex: number) => void
+type typeSetPlaylists = React.Dispatch<React.SetStateAction<IPlaylist[]>>
 
 
 // ----------------------------------------------------------------
@@ -32,13 +29,7 @@ export const loadPreviousSong = async (songs: ISong[], changeState: typeChangeSt
     const playbackObject = new Audio.Sound()
     const status = await playbackObject.loadAsync({ uri: currentAudio.uri }, { shouldPlay: false })
 
-    return changeState({
-        currentAudio,
-        currentIndex,
-        isPlaying: false,
-        playbackObj: playbackObject,
-        soundObj: status
-    })
+    return changeState(playbackObject, status, currentAudio, false, currentIndex)
 }
 
 
@@ -57,7 +48,9 @@ export const loadPlaylists = async (setPlaylists: typeSetPlaylists) => {
 }
 
 
-export const loadPlaySettings = async (setPlaySettings: typeSetPlaySettings) => {
+export const loadPlaySettings = async (
+    setIsRepeatQueue: React.Dispatch<React.SetStateAction<boolean>>, setIsRepeatSong: React.Dispatch<React.SetStateAction<boolean>>
+) => {
     // setAsyncStorage("playSettings", {})
     let settings = await getAsyncStorage('playSettings')
 
@@ -68,5 +61,8 @@ export const loadPlaySettings = async (setPlaySettings: typeSetPlaySettings) => 
         settings = JSON.parse(settings)
     }
 
-    setPlaySettings(settings as any)
+    // @ts-ignore
+    setIsRepeatQueue(settings?.isRepeatQueue as any)
+    // @ts-ignore
+    setIsRepeatSong(settings?.isRepeatSong as any)
 }

@@ -1,7 +1,6 @@
 import { FC, memo, useState } from 'react'
 import { Alert, Modal, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { useLang } from 'app/hooks/useLang'
-import { useActions } from 'app/hooks/useActions'
 
 import { MaterialIcons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
@@ -10,6 +9,7 @@ import { height, width } from 'app/utils/constants'
 import { useColorScheme } from 'nativewind'
 import { getAsyncStorage, setAsyncStorage } from 'app/utils/storage'
 import { pickImage } from 'app/utils/pickImage'
+import { usePlaylists } from 'app/hooks/usePlaylists'
 
 interface IModalCreatePlaylist {
     isVisible: boolean
@@ -22,7 +22,7 @@ const ModalCreatePlaylist: FC<IModalCreatePlaylist> = memo(({ isVisible, setIsVi
     const [imageUri, setImageUri] = useState("")
     const { colorScheme } = useColorScheme()
     const { i18n } = useLang()
-    const { setPlaylists } = useActions()
+    const { setPlaylists } = usePlaylists()
 
     const onSubmit = async () => {
         let storage_playlists = await getAsyncStorage("playlists")

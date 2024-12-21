@@ -2,13 +2,8 @@ import { FC, memo, useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { useTypedNavigation } from 'app/hooks/useTypedNavigation'
 import { useColorScheme } from 'nativewind'
-import { useAudioPlay } from 'app/hooks/useAudioPlay'
 import { useLang } from 'app/hooks/useLang'
-import { useSongs } from 'app/hooks/useSongs'
-import { usePlaybackInfo } from 'app/hooks/usePlaybackInfo'
-import { useActions } from 'app/hooks/useActions'
-import { usePlaylists } from 'app/hooks/usePlaylists'
-import { usePlaySettings } from 'app/hooks/usePlaySettings'
+import { useSongsAndPlaySettings } from 'app/hooks/useSongsAndPlaySettings'
 
 import Layout from 'app/components/ui/Layout'
 import Slider from '@react-native-community/slider'
@@ -16,40 +11,31 @@ import PlayerButton from './PlayerButton'
 import { Marquee } from '@animatereactnative/marquee'
 import { MaterialIcons } from '@expo/vector-icons'
 
-// import getArtistTitle from 'get-artist-title'
-import formatDuration from 'format-duration'
 import { width } from 'app/utils/constants'
-import { removeSitesFromTitle } from 'app/utils/removeSitesFromTitle'
 import { pause, playFromPosition, playNext, resume } from 'app/components/ui/AudioList/audio.methods'
 import { setAsyncStorage } from 'app/utils/storage'
 import { IPlaySettings } from 'app/types/play-settings.types'
 import { showToast } from 'app/utils/toastShow'
 import { getArtistAndTitle } from 'app/utils/getArtistAndTitle'
+import { usePlaybackAndAudioPlay } from 'app/hooks/usePlaybackAndAudioPlay'
+import { usePlaylists } from 'app/hooks/usePlaylists'
+import { formatDuration } from 'app/utils/formatDuration'
 
 const Player: FC = memo(() => {
-
-    // "plugins": [
-    //   "expo-localization",
-    //   "expo-secure-store"
-    // ],    из app.json
-
-    
     const [isBlur, setIsBlur] = useState(false)
     const { i18n } = useLang()
     const { colorScheme } = useColorScheme()
     const { goBack, navigate } = useTypedNavigation()
+    const { totalCount, songs, isRepeatQueue, isRepeatSong, setIsRepeatQueue, setIsRepeatSong  } = useSongsAndPlaySettings()
+    const { changeState, currentAudio, isPlaying, playbackObj, setSoundObj, setIsPlaying, setPlaybackPosition, setPlaybackDuration, 
+        playbackDuration, playbackPosition
+    } = usePlaybackAndAudioPlay()
 
-    const { currentAudio, isPlaying, playbackObj } = useAudioPlay()
-    const { totalCount, songs } = useSongs()
     const { orderToPlay } = usePlaylists()
-    const { isRepeatQueue, isRepeatSong } = usePlaySettings()
-    const { changeState, changeSoundObj, changeIsPlaying, setPlayback, setIsRepeatQueue, setIsRepeatSong } = useActions()
 
     
     if(Object.values(currentAudio).length == 0) return null
     
-
-    const { playbackDuration, playbackPosition } = usePlaybackInfo()
 
     const calculateSeekBar = () => {
         if(playbackDuration != 0 && playbackPosition != 0) {
@@ -68,28 +54,20 @@ const Player: FC = memo(() => {
 
     // @ts-ignore
     const filename = currentAudio.filename.slice(0, currentAudio.filename.lastIndexOf("."))
-    // @ts-ignore
-    // let [ artist, title ] = getArtistTitle(filename, {
-    //     defaultArtist: i18n.t("music.unknownArtist")
-    // })
 
     let { artist, title } = getArtistAndTitle(filename, i18n.t("music.unknownArtist"))
 
     // title = removeSitesFromTitle(title)
     if(artist.length > 50) artist = artist.slice(0, 50) + "..."
 
-
-
-
+    
 
     const playPrevNext = async (variant: "play" | "prev" | "next") => {
         if(variant == 'play') {   // it means we need to play or resume audio
             if(isPlaying) {
-                // @ts-ignore
-                await pause(playbackObj, changeSoundObj, changeIsPlaying)
+                await pause(playbackObj, setSoundObj, setIsPlaying)
             }else {
-                // @ts-ignore
-                await resume(playbackObj, changeSoundObj, changeIsPlaying)
+                await resume(playbackObj, setSoundObj, setIsPlaying)
             }
         }
 
@@ -99,13 +77,13 @@ const Player: FC = memo(() => {
                 if(currentIndex - 1 < 0) nextIndex = totalCount - 1
                 else nextIndex = currentIndex - 1
 
-                await playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlayback)
+                await playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration)
             }else {
                 let nextIndex = 0
                 if(currentIndex - 1 < 0) nextIndex = orderToPlay.length - 1
                 else nextIndex = currentIndex - 1
 
-                await playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlayback)
+                await playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlaybackPosition, setPlaybackDuration)
             }
         }
 
@@ -115,13 +93,13 @@ const Player: FC = memo(() => {
                 if(currentIndex + 1 == totalCount) nextIndex = 0
                 else nextIndex = currentIndex + 1
                 
-                await playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlayback)
+                await playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration)
             } else {
                 let nextIndex = 0
                 if(currentIndex + 1 == orderToPlay.length) nextIndex = 0
                 else nextIndex = currentIndex + 1
 
-                await playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlayback)
+                await playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlaybackPosition, setPlaybackDuration)
             }
         }
 
@@ -138,7 +116,7 @@ const Player: FC = memo(() => {
         const newPlayback = Math.floor(value * playbackDuration) // in millis
 
         await playFromPosition(playbackObj, newPlayback)
-        changeIsPlaying(true)
+        setIsPlaying(true) // from state
     }
 
 
@@ -148,13 +126,13 @@ const Player: FC = memo(() => {
             if(!isRepeatSong) text = i18n.t("playSettings.popUpTrueRepeatSong")
             else text = i18n.t("playSettings.popUpFalseRepeatSong")
             setAsyncStorage("playSettings", JSON.stringify({ isRepeatQueue, isRepeatSong: !isRepeatSong } as IPlaySettings))
-            setIsRepeatSong(!isRepeatSong)
+            setIsRepeatSong(!isRepeatSong) // from state
         }
         else {
             if(!isRepeatQueue) text = i18n.t("playSettings.popUpTrueRepeatQueue")
             else text = i18n.t("playSettings.popUpFalseRepeatQueue")
             setAsyncStorage("playSettings", JSON.stringify({ isRepeatQueue: !isRepeatQueue, isRepeatSong } as IPlaySettings))
-            setIsRepeatQueue(!isRepeatQueue)
+            setIsRepeatQueue(!isRepeatQueue) // from state
         }
 
         showToast(text)

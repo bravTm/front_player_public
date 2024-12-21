@@ -1,12 +1,9 @@
 import { FC, memo, useState } from 'react'
-import { FlatList, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList,  View } from 'react-native'
 import { Audio, InterruptionModeAndroid } from 'expo-av'
 import { useTypedRoute } from 'app/hooks/useTypedRoute'
-import { usePlaylists } from 'app/hooks/usePlaylists'
-import { useSongs } from 'app/hooks/useSongs'
 import { useLang } from 'app/hooks/useLang'
-import { useAudioPlay } from 'app/hooks/useAudioPlay'
-import { useActions } from 'app/hooks/useActions'
+import { usePlaybackAndAudioPlay } from 'app/hooks/usePlaybackAndAudioPlay'
 
 import AudioItem from './AudioItem'
 import MenuMore from './MenuMore/MenuMore'
@@ -16,6 +13,7 @@ import { ISong } from 'app/types/song.types'
 import { bottomMargin, height, width } from 'app/utils/constants'
 import { pause, play, playNext, resume } from './audio.methods'
 import TextField from '../TextField/TextField'
+import { usePlaylists } from 'app/hooks/usePlaylists'
 
 
 interface IAudioList {
@@ -28,9 +26,12 @@ const AudioList: FC<IAudioList> = ({ songs, type="simple" }) => {
     const [searchText, setSearchText] = useState("")
     const [numRender, setNumRender] = useState(20)
 
-    const { currentAudio, playbackObj, soundObj, isPlaying } = useAudioPlay()
-    const { changeSoundObj, changeState, changeIsPlaying, setPlayback, setActivePlstAndIsShuffle } = useActions()
-    const { playlists } = usePlaylists()
+    const { currentAudio, playbackObj, soundObj, isPlaying, setPlaybackPosition, setPlaybackDuration,
+        changeState, setIsPlaying, setSoundObj
+    } = usePlaybackAndAudioPlay()
+
+
+    const { playlists, setActivePlstAndIsShuffle } = usePlaylists()
     const playlistTitle = useTypedRoute()?.params?.title
 
     const { i18n } = useLang()
@@ -38,8 +39,6 @@ const AudioList: FC<IAudioList> = ({ songs, type="simple" }) => {
         state: false,
         songItem: {} as ISong
     })
-    // const { songs } = useSongs()
-
 
     // let songsRender = !!data ? data.slice(0, numRender) : songs.slice(0, numRender)
     let songsRender = songs.slice(0, numRender)
@@ -63,7 +62,6 @@ const AudioList: FC<IAudioList> = ({ songs, type="simple" }) => {
         await Audio.setAudioModeAsync({
             allowsRecordingIOS: false,
             staysActiveInBackground: true,
-            // interruptionModeIOS: InterruptionModeIOS.DuckOthers,
             playsInSilentModeIOS: true,
             shouldDuckAndroid: true,
             interruptionModeAndroid: InterruptionModeAndroid.DuckOthers,
@@ -71,24 +69,24 @@ const AudioList: FC<IAudioList> = ({ songs, type="simple" }) => {
         });
 
         if(soundObj === null) {
-            return await play(audio, changeState, songs as any, setPlayback, setActivePlstAndIsShuffle, playlists, playlistTitle) 
+            return await play(audio, changeState, songs as any, setPlaybackPosition, setPlaybackDuration, setActivePlstAndIsShuffle, playlists, playlistTitle) 
         }
 
         // @ts-ignoreplaybackObj
         if(soundObj?.isLoaded && soundObj?.isPlaying && currentAudio.id == audio.id) {
             // @ts-ignore
-            return await pause(playbackObj, changeSoundObj, changeIsPlaying)
+            return await pause(playbackObj, setSoundObj, setIsPlaying)
         }
 
         // @ts-ignore
         if(soundObj.isLoaded && !soundObj.isPlaying && currentAudio.id == audio.id){
             // @ts-ignore
-            return await resume(playbackObj, changeSoundObj, changeIsPlaying)
+            return await resume(playbackObj, setSoundObj, setIsPlaying)
         }
 
         // @ts-ignore
         if(soundObj.isLoaded && currentAudio !== audio.id) {
-            return await playNext(playbackObj, audio, changeState, songs as any, setPlayback, setActivePlstAndIsShuffle, playlists, playlistTitle)
+            return await playNext(playbackObj, audio, changeState, songs as any, setPlaybackPosition, setPlaybackDuration, setActivePlstAndIsShuffle, playlists, playlistTitle)
         }
     }
 

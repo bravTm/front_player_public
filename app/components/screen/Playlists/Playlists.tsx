@@ -1,7 +1,5 @@
 import { FC, useState, memo } from 'react'
 import { FlatList, Text, TouchableOpacity, View } from 'react-native'
-import { useColorScheme } from 'nativewind'
-import { usePlaylists } from 'app/hooks/usePlaylists'
 import { useLang } from 'app/hooks/useLang'
 
 import Layout from 'app/components/ui/Layout'
@@ -12,11 +10,11 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { IPlaylist } from 'app/types/playlists.types'
 import EmptyPlaylistComponent from './EmptyPlaylistComponent'
 import { height, width } from 'app/utils/constants'
+import { usePlaylists } from 'app/hooks/usePlaylists'
 
 const Playlists: FC = () => {
     const { i18n } = useLang()
     const [isVisible, setIsVisible] = useState(false)
-    const { colorScheme } = useColorScheme()
 
     const { playlists } = usePlaylists()
 
@@ -38,7 +36,6 @@ const Playlists: FC = () => {
                 <MaterialIcons 
                     name={"add-circle"}
                     size={0.06 * width}
-                    // color={colorScheme == 'dark' ? "#edebe6" : "#4287f5"}
                     color={"#edebe6"}
                 />
             </TouchableOpacity>
@@ -47,7 +44,7 @@ const Playlists: FC = () => {
 
         <FlatList 
             ListEmptyComponent={EmptyPlaylistComponent}
-            data={playlists}
+            data={playlists?.reverse()}
             numColumns={2}
             className='mt-[5%]'
             style={{ height: 0.76 * height }}

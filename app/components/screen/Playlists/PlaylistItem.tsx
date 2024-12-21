@@ -1,8 +1,6 @@
 import { FC, memo } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import { useColorScheme } from 'nativewind'
-import { useActions } from 'app/hooks/useActions'
-import { usePlaylists } from 'app/hooks/usePlaylists'
 import { useTypedNavigation } from 'app/hooks/useTypedNavigation'
 
 import { Image } from 'expo-image'
@@ -10,9 +8,10 @@ import { MaterialIcons } from '@expo/vector-icons'
 
 import { IPlaylist } from 'app/types/playlists.types'
 import { width } from 'app/utils/constants'
-import formatDuration from 'format-duration'
 import { pickImage } from 'app/utils/pickImage'
 import { setAsyncStorage } from 'app/utils/storage'
+import { usePlaylists } from 'app/hooks/usePlaylists'
+import { formatDuration } from 'app/utils/formatDuration'
 
 interface IPlaylistItem {
     playlist: IPlaylist
@@ -22,8 +21,7 @@ interface IPlaylistItem {
 const PlaylistItem: FC<IPlaylistItem> = memo(({ playlist, disabled = false }) => {
     const { colorScheme } = useColorScheme()
     const { navigate } = useTypedNavigation()
-    const { playlists } = usePlaylists()
-    const { setPlaylists } = useActions()
+    const { playlists, setPlaylists } = usePlaylists()
 
     let title = playlist?.title
     if(playlist?.title.length > 15) title = playlist.title.slice(0, 15) + "..."

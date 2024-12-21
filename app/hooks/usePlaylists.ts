@@ -1,3 +1,4 @@
-import { useTypedSelector } from "./useTypedSelector";
+import { PlaylistsContext } from "app/provider/PlaylistsProvider";
+import { useContext } from "react";
 
-export const usePlaylists = () => useTypedSelector((state) => state.playlists)
+export const usePlaylists = () => useContext(PlaylistsContext)

@@ -1,12 +1,12 @@
 import { FC, memo } from 'react'
-import { useSongs } from 'app/hooks/useSongs'
 
 import Layout from 'app/components/ui/Layout'
 import AudioList from 'app/components/ui/AudioList/AudioList'
+import { useSongsAndPlaySettings } from 'app/hooks/useSongsAndPlaySettings'
 
 
 const Main: FC = memo(() => {
-  const { songs } = useSongs()
+  const { songs } = useSongsAndPlaySettings()
 
   return (
     <Layout>

@@ -1,7 +1,5 @@
 import { FC, memo, useState } from 'react'
 import { FlatList, Modal, Text, TouchableOpacity, View } from 'react-native'
-import { usePlaylists } from 'app/hooks/usePlaylists'
-import { useActions } from 'app/hooks/useActions'
 import { useColorScheme } from 'nativewind'
 
 import EmptyList from '../../EmptyList'
@@ -14,6 +12,7 @@ import { TypeMaterialIconNames } from 'app/types/icon.types'
 import { ISong } from 'app/types/song.types'
 import { setAsyncStorage } from 'app/utils/storage'
 import cn from 'clsx'
+import { usePlaylists } from 'app/hooks/usePlaylists'
 
 interface IAddToPlaylistItem {
     icon: TypeMaterialIconNames
@@ -25,8 +24,7 @@ const AddToPlaylistItem: FC<IAddToPlaylistItem> = memo(({ icon, title, song}) =>
     const [isShow, setIsShow] = useState(false)
     const [arrayOfPlaylists, setArrayOfPlaylists] = useState<any[]>([])
     const { colorScheme } = useColorScheme()
-    const { playlists } = usePlaylists()
-    const { setPlaylists } = useActions()
+    const { playlists, setPlaylists } = usePlaylists()
 
 
     const toggleArrayOfPlaylists = (title: string) => {

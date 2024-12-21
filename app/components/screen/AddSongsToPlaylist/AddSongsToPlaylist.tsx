@@ -1,11 +1,9 @@
 import { FC, useState } from 'react'
 import { FlatList, TextInput, TouchableOpacity, View } from 'react-native'
-import { usePlaylists } from 'app/hooks/usePlaylists'
-import { useSongs } from 'app/hooks/useSongs'
 import { useTypedNavigation } from 'app/hooks/useTypedNavigation'
 import { useTypedRoute } from 'app/hooks/useTypedRoute'
 import { useLang } from 'app/hooks/useLang'
-import { useActions } from 'app/hooks/useActions'
+import { usePlaylists } from 'app/hooks/usePlaylists'
 
 import Layout from 'app/components/ui/Layout'
 import AddPlaylistAudioItem from 'app/components/ui/AddPlaylistAudioItem/AddPlaylistAudioItem'
@@ -14,6 +12,7 @@ import { setAsyncStorage } from 'app/utils/storage'
 import { ISong } from 'app/types/song.types'
 import { bottomMargin, width } from 'app/utils/constants'
 import { MaterialIcons } from '@expo/vector-icons'
+import { useSongsAndPlaySettings } from 'app/hooks/useSongsAndPlaySettings'
 
 
 const AddSongsToPlaylist: FC = () => {
@@ -21,7 +20,7 @@ const AddSongsToPlaylist: FC = () => {
     const title = useTypedRoute()?.params?.title
     if(!title) return null
 
-    let { playlists, songsToAdd } = usePlaylists()
+    let { playlists, songsToAdd, setPlaylists, setSongsToAdd } = usePlaylists()
     
     const plst = playlists?.map((item) => {
         if(item.title == title) return item
@@ -32,9 +31,8 @@ const AddSongsToPlaylist: FC = () => {
     
     
     const { i18n } = useLang()
-    const { songs } = useSongs()
+    const { songs } = useSongsAndPlaySettings()
     const { navigate } = useTypedNavigation()
-    const { setPlaylists, setSongsToAdd } = useActions()
     const [searchText, setSearchText] = useState("")
     const playlist = plst[0]
     
@@ -67,6 +65,7 @@ const AddSongsToPlaylist: FC = () => {
         setPlaylists(playlists)
         setAsyncStorage("playlists", JSON.stringify(playlists))
         setSongsToAdd([])
+
         setTimeout(() => {
             navigate("SinglePlaylist", { title: playlist?.title as any })
         }, 500)

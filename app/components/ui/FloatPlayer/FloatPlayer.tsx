@@ -1,7 +1,5 @@
 import { FC, memo } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import { useAudioPlay } from 'app/hooks/useAudioPlay'
-import { useActions } from 'app/hooks/useActions'
 import { useColorScheme } from 'nativewind'
 import { useRoute } from '@react-navigation/native'
 import { useLang } from 'app/hooks/useLang'
@@ -11,19 +9,17 @@ import { Marquee } from '@animatereactnative/marquee';
 
 import { width } from 'app/utils/constants'
 import { MaterialIcons } from '@expo/vector-icons'
-import { removeSitesFromTitle } from 'app/utils/removeSitesFromTitle'
-// import getArtistTitle from 'get-artist-title'
 import { pause, resume } from '../AudioList/audio.methods'
 import { getArtistAndTitle } from 'app/utils/getArtistAndTitle'
+import { usePlaybackAndAudioPlay } from 'app/hooks/usePlaybackAndAudioPlay'
 
 
 const FloatPlayer: FC = () => {
-    const { currentAudio, playbackObj, isPlaying } = useAudioPlay()
+    const { currentAudio, playbackObj, isPlaying, setIsPlaying, setSoundObj } = usePlaybackAndAudioPlay()
     const { colorScheme } = useColorScheme()
     const { navigate } = useTypedNavigation()
     const { i18n } = useLang()
     const { name } = useRoute()
-    const { changeSoundObj, changeIsPlaying } = useActions()
     
 
     if(name == 'Player' || !currentAudio) return null;
@@ -32,23 +28,20 @@ const FloatPlayer: FC = () => {
 
     // @ts-ignore
     const filename = currentAudio.filename.slice(0, currentAudio.filename.lastIndexOf("."))
-    // @ts-ignore
-    // let [ artist, title ] = getArtistTitle(filename, {
-    //     defaultArtist: i18n.t("music.unknownArtist")
-    // })
+
 
     let { artist, title } = getArtistAndTitle(filename, i18n.t("music.unknownArtist"))
 
-    // title = removeSitesFromTitle(title)
+
     if(artist.length > 26) artist = artist.slice(0, 26) + "..."
 
 
     
     const onStopOrPlayMusic = async () => {
         // @ts-ignore
-        if(isPlaying) await pause(playbackObj, changeSoundObj, changeIsPlaying)
+        if(isPlaying) await pause(playbackObj, setSoundObj, setIsPlaying)
         // @ts-ignore
-        else await resume(playbackObj, changeSoundObj, changeIsPlaying)
+        else await resume(playbackObj, setSoundObj, setIsPlaying)
     }
 
     return (

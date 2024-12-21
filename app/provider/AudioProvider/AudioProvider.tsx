@@ -1,40 +1,25 @@
-import { FC, memo, PropsWithChildren, useCallback, useEffect, useState } from 'react'
-import { useActions } from 'app/hooks/useActions'
-import { useAudioPlay } from 'app/hooks/useAudioPlay'
-import { useSongs } from 'app/hooks/useSongs'
-import { usePlaylists } from 'app/hooks/usePlaylists'
-import { usePlaySettings } from 'app/hooks/usePlaySettings'
+import { FC, memo, PropsWithChildren, useCallback, useEffect } from 'react'
 import { useLang } from 'app/hooks/useLang'
+import { useSongsAndPlaySettings } from 'app/hooks/useSongsAndPlaySettings'
+import { usePlaybackAndAudioPlay } from 'app/hooks/usePlaybackAndAudioPlay'
+import { usePlaylists } from 'app/hooks/usePlaylists'
 
-// import * as BackgroundFetch from 'expo-background-fetch';
-// import * as TaskManager from 'expo-task-manager';
-// import MusicControl from 'react-native-music-control';
 
 import { Audio, InterruptionModeAndroid } from 'expo-av'
 import { pause, playNext } from 'app/components/ui/AudioList/audio.methods'
 import { getPermission } from './permissions-functions'
 import { loadPlaylists, loadPlaySettings, loadPreviousSong } from './loading-functions'
-// import { BACKGROUND_FETCH_TASK, useBackgroundChangeSong } from 'app/hooks/useBackgroundChangeSong'
 
-
-// async function registerBackgroundFetchAsync() {
-//     return await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
-//         minimumInterval: 2, // 10 seconds
-//         stopOnTerminate: false, // android only,
-//         startOnBoot: true, // android only
-//     });
-// }
 
 
 const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
-    const { playbackObj, isPlaying, currentIndex, currentAudio } = useAudioPlay()
-    const { changeState, setPlayback, changeSoundObj, changeIsPlaying, initialize, setPlaylists, setPlaySettings } = useActions()
-    const { activePlaylist, orderToPlay } = usePlaylists() 
-    const { songs, totalCount } = useSongs()
-    const { isRepeatQueue, isRepeatSong } = usePlaySettings()
-    const { i18n } = useLang()
+    const { activePlaylist, orderToPlay, setPlaylists } = usePlaylists() 
 
-    // useBackgroundChangeSong()
+    const { i18n } = useLang()
+    const { songs, totalCount, setSongs, setTotalCount, setIsRepeatQueue, setIsRepeatSong, isRepeatQueue, isRepeatSong } = useSongsAndPlaySettings()
+    const { setPlaybackDuration, setPlaybackPosition, playbackObj, isPlaying, currentIndex, currentAudio,
+        changeState
+    } = usePlaybackAndAudioPlay()
 
     const updatePlaybackStatus = useCallback(async () => {
         await Audio.setAudioModeAsync({
@@ -50,15 +35,16 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
             const status = await playbackObj.getStatusAsync();
 
             if (status.isLoaded) {
-                setPlayback({ playbackPosition: status.positionMillis, playbackDuration: status.durationMillis })
+                setPlaybackPosition(status?.positionMillis)
+                setPlaybackDuration(status?.durationMillis as any)
                 
                 const isSongEnded = (status.didJustFinish || status.positionMillis == status.durationMillis)
 
                 if(activePlaylist &&  isRepeatSong && isSongEnded){
-                    return playNext(playbackObj, currentAudio as any, changeState, activePlaylist?.songs as any, setPlayback)
+                    return playNext(playbackObj, currentAudio as any, changeState, activePlaylist?.songs as any, setPlaybackPosition, setPlaybackDuration)
                 }
                 else if(isRepeatSong && isSongEnded){
-                    return playNext(playbackObj, currentAudio as any, changeState, songs as any, setPlayback)
+                    return playNext(playbackObj, currentAudio as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration)
                 }
 
                 if(!isRepeatQueue && (currentIndex + 1 == orderToPlay?.length || currentIndex + 1 == songs?.length) && isSongEnded) {
@@ -72,20 +58,20 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
                         if(currentIndex + 1 == totalCount) nextIndex = 0
                         else nextIndex = currentIndex + 1
     
-                        return playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlayback)
+                        return playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration)
                     }else {
                         let nextIndex = 0
                         if(currentIndex + 1 == orderToPlay.length) nextIndex = 0
                         else nextIndex = currentIndex + 1
     
-                        return playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlayback)
+                        return playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlaybackPosition, setPlaybackDuration)
                     }
                 }
             } else if (status.error) {
                 console.error(`Playback error: ${status.error}`);
             }
         }
-    }, [playbackObj, setPlayback]);
+    }, [playbackObj, setPlaybackDuration, setPlaybackPosition]);
     
     useEffect(() => {
         if (!isPlaying) return;
@@ -94,27 +80,15 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
     }, [isPlaying, updatePlaybackStatus]);
 
 
-
-
-    // useEffect(() => {
-    //     const register = async () => {
-    //         await registerBackgroundFetchAsync();
-    //         await BackgroundFetch.setMinimumIntervalAsync(600);
-    //     }
-        
-    //     register()
-    // }, [isPlaying, playbackObj]);
-
-
-
     
 
     useEffect(() => {
         // load songs from device
-        getPermission(i18n, initialize)
+        getPermission(i18n, setSongs, setTotalCount)
         loadPreviousSong(songs as any, changeState)
         loadPlaylists(setPlaylists)
-        loadPlaySettings(setPlaySettings)
+
+        loadPlaySettings(setIsRepeatQueue, setIsRepeatSong)
     }, []) 
 
 
