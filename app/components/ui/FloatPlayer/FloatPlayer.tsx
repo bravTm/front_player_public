@@ -5,7 +5,7 @@ import { useRoute } from '@react-navigation/native'
 import { useLang } from 'app/hooks/useLang'
 import { useTypedNavigation } from 'app/hooks/useTypedNavigation'
 
-import { Marquee } from '@animatereactnative/marquee';
+// import { Marquee } from '@animatereactnative/marquee';
 
 import { width } from 'app/utils/constants'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -66,17 +66,17 @@ const FloatPlayer: FC = () => {
         </TouchableOpacity>
 
         <View className='-ml-[6%] w-[55%] justify-start'>
-            {title?.length >= 26 ? (
+            {/* {title?.length >= 26 ? (
                 <Marquee spacing={20} speed={0.3}>
                     <Text className='text-white overflow-hidden'>
                         {title}
                     </Text>
                 </Marquee>
-            ) : (
+            ) : ( */}
                 <Text className='text-white'>
                     {title}
                 </Text>
-            )}
+            {/* )} */}
 
             <Text className='text-white opacity-50'>
                 {artist}

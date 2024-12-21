@@ -1,8 +1,6 @@
 import { Alert, BackHandler } from "react-native"
 import * as MediaLibrary from "expo-media-library"
 import { I18n } from "i18n-js"
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit"
-import { IReduxSongs } from "app/store/songs/songs.slice"
 import { ISong } from "app/types/song.types"
 
 

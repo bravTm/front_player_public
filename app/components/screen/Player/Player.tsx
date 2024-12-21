@@ -8,7 +8,7 @@ import { useSongsAndPlaySettings } from 'app/hooks/useSongsAndPlaySettings'
 import Layout from 'app/components/ui/Layout'
 import Slider from '@react-native-community/slider'
 import PlayerButton from './PlayerButton'
-import { Marquee } from '@animatereactnative/marquee'
+// import { Marquee } from '@animatereactnative/marquee'
 import { MaterialIcons } from '@expo/vector-icons'
 
 import { width } from 'app/utils/constants'
@@ -177,7 +177,7 @@ const Player: FC = memo(() => {
             </View>
 
             <View className='justify-start items-start w-[95%] mx-[2%]'>
-                {title?.length >= 30 ? (
+                {/* {title?.length >= 30 ? (
                     <Marquee spacing={20} speed={0.3}>
                         <Text 
                             className='dark:text-light text-dark overflow-hidden'
@@ -186,7 +186,7 @@ const Player: FC = memo(() => {
                             {title}
                         </Text>
                     </Marquee>
-                ) : (
+                ) : ( */}
                     <Text 
                         className='dark:text-light text-dark'
                         style={{fontSize: 0.055 * width}}
@@ -194,7 +194,7 @@ const Player: FC = memo(() => {
                         {title}
                     </Text>
 
-                )}
+                {/* )} */}
                 <Text 
                     className='dark:text-light text-dark opacity-50 mt-[1%]'
                     style={{fontSize: 0.031 * width}}

@@ -1,4 +1,3 @@
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { IPlaylist } from "app/types/playlists.types";
 import { ISong } from "app/types/song.types"
 import { setAsyncStorage } from "app/utils/storage";

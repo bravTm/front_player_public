@@ -1,19 +1,19 @@
 {
   "expo": {
     "name": "Shcherbakov Player",
-    "slug": "SPlayer",
-    "version": "1.0.0",
+    "slug": "SPlayerrrrr",
+    "version": "1.0.2",
     "orientation": "portrait",
-    "icon": "./assets/LOGO.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/ShortTitlePlayerBlack.png",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/LOGO.png",
+      "image": "./assets/ShortTitlePlayerBlack.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "web": {
-      "favicon": "./assets/LOGO.png"
+      "favicon": "./assets/ShortTitlePlayerBlack.png"
     },
     "experiments": {
       "tsconfigPaths": true
@@ -22,22 +22,21 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.brav.SPlayer"
+      "supportsTablet": true
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/LOGO.png",
-        "backgroundColor": "#000000"
+        "foregroundImage": "./assets/ShortTitlePlayerBlack.png",
+        "backgroundColor": "#FFFFFF"
       },
-      "package": "com.brav.SPlayer"
+      "package": "com.brav.SPlayerrrrr"
     },
     "extra": {
       "eas": {
-        "projectId": "934e772d-8fbb-4814-a0fc-527ff7fc6185"
+        "projectId": "41728051-ae12-4c75-9d5c-b1d51a5b12d8"
       }
     }
   }
