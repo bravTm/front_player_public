@@ -14,22 +14,24 @@ export const loadPreviousSong = async (songs: ISong[], changeState: typeChangeSt
     let prevAudio = await getAsyncStorage("previousAudio")
     let currentAudio = null, currentIndex = null
 
+
     if(prevAudio == null || prevAudio == undefined) {
-    currentAudio = songs[0]
-    currentIndex = 0
+        currentAudio = songs[0]
+        currentIndex = 0
     }
     else {
-    prevAudio = JSON.parse(prevAudio)
-    // @ts-ignore
-    currentAudio = prevAudio.audio
-    // @ts-ignore
-    currentIndex = prevAudio.index
+        prevAudio = JSON.parse(prevAudio)
+        // @ts-ignore
+        currentAudio = prevAudio.audio
+        // @ts-ignore
+        currentIndex = prevAudio.index
     }
+
 
     const playbackObject = new Audio.Sound()
     const status = await playbackObject.loadAsync({ uri: currentAudio.uri }, { shouldPlay: false })
 
-    return changeState(playbackObject, status, currentAudio, false, currentIndex)
+    changeState(playbackObject, status, currentAudio, false, currentIndex)
 }
 
 

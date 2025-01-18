@@ -5,7 +5,7 @@ import { useRoute } from '@react-navigation/native'
 import { useLang } from 'app/hooks/useLang'
 import { useTypedNavigation } from 'app/hooks/useTypedNavigation'
 
-// import { Marquee } from '@animatereactnative/marquee';
+import { Marquee } from '@animatereactnative/marquee';
 
 import { width } from 'app/utils/constants'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -47,7 +47,6 @@ const FloatPlayer: FC = () => {
     return (
      <TouchableOpacity 
         className='absolute flex-row w-full bottom-0 z-50 dark:bg-[#343536] bg-[#0d2b5c] justify-around items-center'
-        // style={{marginBottom: 0.15*width, height: 0.165*width}}
         style={{height: 0.155*width}}
         onPress={() => navigate("Player")}
         activeOpacity={0.8}
@@ -66,17 +65,17 @@ const FloatPlayer: FC = () => {
         </TouchableOpacity>
 
         <View className='-ml-[6%] w-[55%] justify-start'>
-            {/* {title?.length >= 26 ? (
+            {title?.length >= 26 ? (
                 <Marquee spacing={20} speed={0.3}>
                     <Text className='text-white overflow-hidden'>
                         {title}
                     </Text>
                 </Marquee>
-            ) : ( */}
+            ) : (
                 <Text className='text-white'>
                     {title}
                 </Text>
-            {/* )} */}
+            )}
 
             <Text className='text-white opacity-50'>
                 {artist}

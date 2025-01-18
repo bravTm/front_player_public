@@ -90,6 +90,7 @@ const AudioList: FC<IAudioList> = ({ songs, type="simple" }) => {
         }
     }
 
+
     return (
 
         <>
@@ -106,9 +107,9 @@ const AudioList: FC<IAudioList> = ({ songs, type="simple" }) => {
             <FlatList 
                 removeClippedSubviews
                 // @ts-ignore
-                data={searchText.length > 1 ? searchSongs : songsRender}
+                // data={searchText.length > 1 ? searchSongs : songsRender}
                 // data={songsRender}
-                // data={searchSongs}
+                data={searchSongs}
                 initialNumToRender={10}
                 windowSize={1}
                 keyExtractor={item => item.id.toString()}
@@ -116,11 +117,11 @@ const AudioList: FC<IAudioList> = ({ songs, type="simple" }) => {
                 renderItem={({item}: {item: ISong}) => <AudioItem item={item} setIsShow={setIsShow} onAudioPress={() => handleAudioPress(item)} activeId={currentAudio?.id || ""} isPlaying={isPlaying} key={item.id} />}
                 contentContainerStyle={{
                     justifyContent: 'center',
-                    paddingBottom: !!playlistTitle ? bottomMargin : 0
+                    paddingBottom: !playlistTitle ? 0.6 * bottomMargin : 0
                 }}
-                style={{ height: 0.75 * height }}
-                onEndReached={onEndReached}
-                onStartReached={onStartReached}
+                style={{ height: 0.8 * height }}
+                // onEndReached={onEndReached}
+                // onStartReached={onStartReached}
                 ListEmptyComponent={<EmptyList />}
             />
         </>

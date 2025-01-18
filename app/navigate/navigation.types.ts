@@ -11,7 +11,8 @@ export type TypeRootStackParamList = {
     AddSongsToPlaylist: {
         title: string
     },
-    KaraokeLyrics: undefined
+    KaraokeLyrics: undefined,
+    Zip: undefined
 }
 
 

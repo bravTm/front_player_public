@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Shcherbakov Player",
-    "slug": "SPlayerrrrr",
-    "version": "1.0.2",
+    "slug": "SPlayer",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/ShortTitlePlayerBlack.png",
     "userInterfaceStyle": "dark",
@@ -25,19 +25,23 @@
       "supportsTablet": true
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/934e772d-8fbb-4814-a0fc-527ff7fc6185"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/ShortTitlePlayerBlack.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.brav.SPlayerrrrr"
+      "package": "com.brav.SPlayer"
     },
     "extra": {
       "eas": {
-        "projectId": "41728051-ae12-4c75-9d5c-b1d51a5b12d8"
+        "projectId": "934e772d-8fbb-4814-a0fc-527ff7fc6185"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

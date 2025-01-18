@@ -53,6 +53,7 @@ const Navigation: FC = () => {
 
     return (
 		<ThemeProvider value={colorScheme == 'dark' ? DarkTheme : DefaultTheme}>
+			{/* @ts-ignore */}
 			<>
 				<NavigationContainer ref={navRef}>
 					<Navigator />

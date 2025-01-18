@@ -1,7 +1,6 @@
 import { ISong } from 'app/types/song.types';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import { createContext, FC, PropsWithChildren, useState } from 'react'
-import { Text, View } from 'react-native'
 
 interface IContext {
     playbackPosition: number | undefined
@@ -22,6 +21,7 @@ interface IContext {
     setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>
     changeState: (playbackObj: Audio.Sound, soundObj: AVPlaybackStatus, currentAudio: ISong, isPlaying: boolean, currentIndex: number) => void
 }
+
 
 export const PlaybackAndAudioPlayContext = createContext<IContext>({} as any);
 
