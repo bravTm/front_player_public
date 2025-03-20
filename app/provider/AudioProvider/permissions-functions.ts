@@ -44,10 +44,9 @@ export const getPermission = async (i18n: I18n, setSongs: setSongsType, setTotal
   // {"accessPrivileges": "none", "canAskAgain": true, "expires": "never", "granted": false, "status": "undetermined"}
   const permission = await MediaLibrary.getPermissionsAsync()
   
-
   if(permission.granted) {
-      // we want to get all the audio files
-      getAudioFiles(setSongs, setTotalCount)
+    // we want to get all the audio files
+    getAudioFiles(setSongs, setTotalCount)
   }
 
   if(!permission.granted && permission.canAskAgain) {

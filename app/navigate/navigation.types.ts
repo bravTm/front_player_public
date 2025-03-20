@@ -12,7 +12,7 @@ export type TypeRootStackParamList = {
         title: string
     },
     KaraokeLyrics: undefined,
-    Zip: undefined
+    SocketComponent: undefined
 }
 
 

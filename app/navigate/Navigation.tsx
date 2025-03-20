@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from 'react'
+import React from 'react'
 import { DarkTheme, DefaultTheme, NavigationContainer, ThemeProvider, useNavigationContainerRef } from '@react-navigation/native'
 import { useColorScheme } from 'nativewind'
 
@@ -53,7 +54,6 @@ const Navigation: FC = () => {
 
     return (
 		<ThemeProvider value={colorScheme == 'dark' ? DarkTheme : DefaultTheme}>
-			{/* @ts-ignore */}
 			<>
 				<NavigationContainer ref={navRef}>
 					<Navigator />

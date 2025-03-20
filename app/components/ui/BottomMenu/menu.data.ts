@@ -10,10 +10,16 @@ export const menuItems: IMenuItem[] = [
         iconName: 'queue-music',
         path: 'Playlists'
     },
+
+    {
+        iconName: "cast-connected",
+        path: "SocketComponent"
+    },
     
     {
         iconName: 'settings',
         path: 'Settings'
     },
+    
 
 ]

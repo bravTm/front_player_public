@@ -6,7 +6,7 @@ import { Text, View } from 'react-native'
 const Footer: FC = () => {
     const { i18n } = useLang()
 
-    const version = "1.0.3"
+    const version = "2.2.2"
 
     return (
      <View className='bottom-0 mb-[3%]'>

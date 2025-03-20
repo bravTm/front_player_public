@@ -4,9 +4,11 @@ import { useTypedNavigation } from 'app/hooks/useTypedNavigation'
 import { useColorScheme } from 'nativewind'
 import { useLang } from 'app/hooks/useLang'
 import { useSongsAndPlaySettings } from 'app/hooks/useSongsAndPlaySettings'
+import { useTopSongs } from 'app/hooks/useTopSongs'
+import { usePlaybackAndAudioPlay } from 'app/hooks/usePlaybackAndAudioPlay'
+import { usePlaylists } from 'app/hooks/usePlaylists'
 
 import Layout from 'app/components/ui/Layout'
-import Slider from '@react-native-community/slider'
 import PlayerButton from './PlayerButton'
 import { Marquee } from '@animatereactnative/marquee'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -17,9 +19,7 @@ import { setAsyncStorage } from 'app/utils/storage'
 import { IPlaySettings } from 'app/types/play-settings.types'
 import { showToast } from 'app/utils/toastShow'
 import { getArtistAndTitle } from 'app/utils/getArtistAndTitle'
-import { usePlaybackAndAudioPlay } from 'app/hooks/usePlaybackAndAudioPlay'
-import { usePlaylists } from 'app/hooks/usePlaylists'
-import { formatDuration } from 'app/utils/formatDuration'
+import SliderSong from './SliderSong'
 
 const Player: FC = memo(() => {
     const [isBlur, setIsBlur] = useState(false)
@@ -32,18 +32,11 @@ const Player: FC = memo(() => {
     } = usePlaybackAndAudioPlay()
 
     const { orderToPlay } = usePlaylists()
+    const { topSongs, setTopSongs } = useTopSongs()
 
     
     if(Object.values(currentAudio).length == 0) return null
     
-
-    const calculateSeekBar = () => {
-        if(playbackDuration != 0 && playbackPosition != 0) {
-            if(playbackDuration == undefined ||playbackPosition == undefined ) return 0
-            return playbackPosition / playbackDuration
-        }
-        return 0
-    }
 
     // @ts-ignore
     let currentIndex = songs.findIndex(el => el.id == (currentAudio as any).id)
@@ -60,7 +53,9 @@ const Player: FC = memo(() => {
     // title = removeSitesFromTitle(title)
     if(artist.length > 50) artist = artist.slice(0, 50) + "..."
 
-    
+    // const relatedMusic = songs?.filter(item => item.filename.includes(artist))
+    // const [isShow, setIsShow] = useState({ state: false, songItem: {} as ISong })
+
 
     const playPrevNext = async (variant: "play" | "prev" | "next") => {
         if(variant == 'play') {   // it means we need to play or resume audio
@@ -77,13 +72,13 @@ const Player: FC = memo(() => {
                 if(currentIndex - 1 < 0) nextIndex = totalCount - 1
                 else nextIndex = currentIndex - 1
 
-                await playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration)
+                await playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration, null, null, null, topSongs, setTopSongs)
             }else {
                 let nextIndex = 0
                 if(currentIndex - 1 < 0) nextIndex = orderToPlay.length - 1
                 else nextIndex = currentIndex - 1
 
-                await playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlaybackPosition, setPlaybackDuration)
+                await playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlaybackPosition, setPlaybackDuration, null, null, null, topSongs, setTopSongs)
             }
         }
 
@@ -93,13 +88,13 @@ const Player: FC = memo(() => {
                 if(currentIndex + 1 == totalCount) nextIndex = 0
                 else nextIndex = currentIndex + 1
                 
-                await playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration)
+                await playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration, null, null, null, topSongs, setTopSongs)
             } else {
                 let nextIndex = 0
                 if(currentIndex + 1 == orderToPlay.length) nextIndex = 0
                 else nextIndex = currentIndex + 1
 
-                await playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlaybackPosition, setPlaybackDuration)
+                await playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlaybackPosition, setPlaybackDuration, null, null, null, topSongs, setTopSongs)
             }
         }
 
@@ -138,9 +133,6 @@ const Player: FC = memo(() => {
         showToast(text)
     }
 
-
-    const timePosition = formatDuration(playbackPosition as any)
-    const timeDuration = formatDuration(playbackDuration as any)
 
 
     return (
@@ -210,34 +202,10 @@ const Player: FC = memo(() => {
             </View>
 
 
-
-            <View className='my-[5%]'>
-                <Slider
-                    style={{width: width, height: 0.07 * width}}
-                    value={calculateSeekBar()}
-                    minimumValue={0}
-                    maximumValue={1}
-                    minimumTrackTintColor={colorScheme == 'dark' ? "#ffe600" : "#4287f5"}
-                    maximumTrackTintColor={colorScheme == 'dark' ?  "#FFFFFF" : "#000000"}
-                    thumbTintColor={colorScheme == 'dark' ? "#ffe600" : "#4287f5"}
-                    onSlidingComplete={seekBarChangePlayback}
-                />
-
-                <View className='justify-between items-center flex-row mx-[2%] opacity-60'>
-                    <Text className='dark:text-light text-dark' 
-                        style={{ fontSize: 0.03 * width }}    
-                    >
-                        {timePosition}
-                    </Text>
-
-                    <Text className='dark:text-light text-dark' 
-                        style={{ fontSize: 0.03 * width }}    
-                    >
-                        {timeDuration}
-                    </Text>
-                </View>
-            </View>
-
+            <SliderSong onSlidingComplete={seekBarChangePlayback} 
+                    playbackDuration={playbackDuration as any} 
+                    playbackPosition={playbackPosition as any}
+            />
 
 
             <View className='flex-row justify-between items-center '>
@@ -270,6 +238,7 @@ const Player: FC = memo(() => {
                         color={colorScheme == 'dark' ? "#edebe6" : "#4287f5"}
                     />
                 </TouchableOpacity>
+
             </View>
         </ScrollView>
      </Layout>

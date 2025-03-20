@@ -47,7 +47,7 @@ const MenuItem: FC<IMenuItemProps> = ({ item, nav, currentRoute }) => {
                     colorScheme == 'light' && isActive ? "blue" : "gray"
                 }}
             >
-                {i18n.t(`topMenu.${item.path}`)}
+                {i18n.t(`bottomMenu.${item.path}`)}
             </Text>
         </View>
     </Pressable>

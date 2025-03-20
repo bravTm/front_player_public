@@ -1,60 +1,44 @@
 import { FC, memo } from 'react'
 import { Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-
 import { useColorScheme } from 'nativewind'
 import { useLang } from 'app/hooks/useLang'
-import { useSocket } from 'app/hooks/useSocket'
-
 import { ISong } from 'app/types/song.types'
 import { MaterialIcons } from '@expo/vector-icons'
 import { width } from 'app/utils/constants'
 import { getArtistAndTitle } from 'app/utils/getArtistAndTitle'
 import { formatDuration } from 'app/utils/formatDuration'
-import cn from 'clsx'
 
 
-interface IAudioItem {
-    item: ISong
-    setIsShow: React.Dispatch<React.SetStateAction<{
-        state: boolean;
-        songItem: ISong;
-    }>>
-    onAudioPress: () => void
+interface IAudioItemSocket {
+    url: string
     isPlaying: boolean
-    activeId: string
+    plPos: number
+    plDur: number
+    onAudioPress: (type: "PLAY" | "PAUSE") => Promise<void>
 }
 
-const AudioItem: FC<IAudioItem> = memo(({ item, setIsShow, onAudioPress, activeId, isPlaying }) => {
+const AudioItemSocket: FC<IAudioItemSocket> = memo(({ url, isPlaying, plDur, plPos, onAudioPress }) => {
     const { colorScheme } = useColorScheme()
     const { i18n } = useLang()
-    const { socket } = useSocket()
 
-    const duration = formatDuration(item.duration * 1000)
-    const filename = item.filename.slice(0, item.filename.lastIndexOf("."))
+    const file = url.slice(url.lastIndexOf("/") + 1, url.length)
+
+    const position = formatDuration(plPos)
+    const duration = formatDuration(plDur)
+    const filename = file.slice(0, file.lastIndexOf("."))
 
     let { artist, title } = getArtistAndTitle(filename, i18n.t("music.unknownArtist"))
 
     if(title.length >= 26) title = title.slice(0, 26) + "..." 
     if(artist.length > 26) artist = artist.slice(0, 26) + "..."
 
-    const onOpenOrCloseMenuMore = () => {
-        if(!!setIsShow) {
-            setIsShow({
-                state: true,
-                songItem: item
-            })
-        }
-    }
-
 
     return (
     <View className='w-[100wh] px-[2.5%] mb-[5%]' style={{ height: 0.11 * width }}>
         <View className='items-top flex-row'>
 
-            <TouchableWithoutFeedback onPress={onAudioPress} disabled={!!socket}>
-                <View className={cn('flex-row items-top w-[93%]', {
-                    "opacity-50": !!socket
-                })}>
+            <TouchableWithoutFeedback onPress={() => onAudioPress(isPlaying ? "PAUSE" : "PLAY")}>
+                <View className='flex-row items-top w-[93%]'>
 
                     <View className='w-[15%]'>
                         {/* Image */}
@@ -66,7 +50,7 @@ const AudioItem: FC<IAudioItem> = memo(({ item, setIsShow, onAudioPress, activeI
                                 height: 0.12* width
                             }}
                         >
-                            {activeId != item?.id ? (
+                            {!isPlaying ? (
                                 <MaterialIcons 
                                     name='music-note'
                                     size={0.07 * width}
@@ -121,7 +105,7 @@ const AudioItem: FC<IAudioItem> = memo(({ item, setIsShow, onAudioPress, activeI
                                     className='dark:text-[#8f8989] text-[#6e6c67] text-right mr-[3%]'
                                     style={{fontSize: 0.03 * width}}
                                 >
-                                    {duration}
+                                    {`${position} / ${duration}`}
                                 </Text>
                             </View>
 
@@ -132,22 +116,10 @@ const AudioItem: FC<IAudioItem> = memo(({ item, setIsShow, onAudioPress, activeI
                 </View>
             </TouchableWithoutFeedback>
 
-            <TouchableOpacity 
-                className='justify-end items-center w-[7%]'
-                onPress={onOpenOrCloseMenuMore}
-            >
-                <MaterialIcons 
-                    name='more-vert'
-                    size={0.07 * width}
-                    color={colorScheme == 'dark' ? "white" : "#121211"}
-                    className='font-bold'
-                />
-            </TouchableOpacity>
-
         </View>
     
     </View>
     )
 })
 
-export default AudioItem
+export default AudioItemSocket

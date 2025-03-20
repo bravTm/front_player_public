@@ -68,3 +68,21 @@ export const loadPlaySettings = async (
     // @ts-ignore
     setIsRepeatSong(settings?.isRepeatSong as any)
 }
+
+
+
+
+
+export const getTopSongs = async (setTopSongs: React.Dispatch<React.SetStateAction<never[]>>) => {
+    let topSongs = await getAsyncStorage('topSongs')
+
+    
+    if(!topSongs) {
+        topSongs = [] as any
+    }
+    else {
+        topSongs = JSON.parse(topSongs)
+    }
+
+    setTopSongs(topSongs as any)
+}

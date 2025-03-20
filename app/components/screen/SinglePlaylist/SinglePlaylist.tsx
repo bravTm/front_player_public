@@ -1,8 +1,12 @@
 import { FC, memo, useState } from 'react'
+import React from 'react'
 import { Alert, Text, View } from 'react-native'
 import { useTypedRoute } from 'app/hooks/useTypedRoute'
 import { useTypedNavigation } from 'app/hooks/useTypedNavigation'
 import { useLang } from 'app/hooks/useLang'
+import { usePlaybackAndAudioPlay } from 'app/hooks/usePlaybackAndAudioPlay'
+import { usePlaylists } from 'app/hooks/usePlaylists'
+import { useTopSongs } from 'app/hooks/useTopSongs'
 
 import AudioList from 'app/components/ui/AudioList/AudioList'
 import Layout from 'app/components/ui/Layout'
@@ -14,9 +18,13 @@ import { width } from 'app/utils/constants'
 import { shuffleArray } from 'app/utils/shuffle'
 import { playNext } from 'app/components/ui/AudioList/audio.methods'
 import { setAsyncStorage } from 'app/utils/storage'
-import { usePlaybackAndAudioPlay } from 'app/hooks/usePlaybackAndAudioPlay'
-import { usePlaylists } from 'app/hooks/usePlaylists'
 import { formatDuration } from 'app/utils/formatDuration'
+
+// import * as FileSystem from 'expo-file-system'
+// import * as Sharing from 'expo-sharing'
+// import JSZip from 'jszip'
+// import * as Updates from 'expo-updates';
+
 
 
 const SinglePlaylist: FC = memo(() => {
@@ -46,6 +54,7 @@ const SinglePlaylist: FC = memo(() => {
     const { i18n } = useLang()
     const { navigate } = useTypedNavigation()
     const { playbackObj, setPlaybackPosition, setPlaybackDuration, changeState } = usePlaybackAndAudioPlay()
+    const { topSongs, setTopSongs } = useTopSongs()
 
     let time = formatDuration(0)
 
@@ -93,10 +102,10 @@ const SinglePlaylist: FC = memo(() => {
 
         if(order.length > 0) {
             if(type == 'line') {
-                playNext(playbackObj, playlist?.songs[0], changeState, playlist?.songs, setPlaybackPosition, setPlaybackDuration)
+                playNext(playbackObj, playlist?.songs[0], changeState, playlist?.songs, setPlaybackPosition, setPlaybackDuration, null, null, null, topSongs, setTopSongs)
             }
             else {
-                playNext(playbackObj,  order[0], changeState, playlist?.songs, setPlaybackPosition, setPlaybackDuration)
+                playNext(playbackObj,  order[0], changeState, playlist?.songs, setPlaybackPosition, setPlaybackDuration, null, null, null, topSongs, setTopSongs)
             }
         }
     }
@@ -128,6 +137,47 @@ const SinglePlaylist: FC = memo(() => {
     }
 
 
+
+
+    // const archivePlaylist = async () => {
+    //     const zip = new JSZip();
+
+    //     const listUri = playlist?.songs?.map((item) => item.uri) as any
+
+    //     console.log("TYT1")
+
+    //     for (const uri of listUri) {
+    //         const fileName = uri.split('/').pop(); 
+    //         const fileData = await FileSystem.readAsStringAsync(uri, {
+    //           encoding: FileSystem.EncodingType.Base64,
+    //         });
+    //         zip.file(fileName as string, fileData, { base64: true });
+    //     }
+
+    //     if(playlist?.image) {
+    //         const fileData = await FileSystem.readAsStringAsync(playlist?.image, {
+    //           encoding: FileSystem.EncodingType.Base64,
+    //         });
+    //         zip.file('thumbnail' as string, fileData, { base64: true });
+    //     }
+
+    //     console.log("TYT2")
+        
+    //     const content = await zip.generateAsync({ type: 'base64' });
+    //     const zipUri = `${FileSystem.documentDirectory}${playlist?.title}.zip`;
+
+    //     console.log("TYT3", zipUri)
+        
+    //     await FileSystem.writeAsStringAsync(zipUri, content, {
+    //         encoding: FileSystem.EncodingType.Base64,
+    //     });
+
+    //     await Sharing.shareAsync(zipUri);
+
+    //     // setTimeout(() => {
+    //     //     Updates.reloadAsync()
+    //     // }, 500)
+    // }
 
     return (
      <Layout>
@@ -173,7 +223,7 @@ const SinglePlaylist: FC = memo(() => {
         </Text>
 
         {isShow && !!playlist ? (
-            <View className='justify-around items-center flex-row  animate-fade'>
+            <View className='justify-around items-center  animate-fade'>
                 <View className='flex-row justify-around items-center'>
                     <PlaylistButton 
                         name='add' 
@@ -188,7 +238,16 @@ const SinglePlaylist: FC = memo(() => {
                         text={i18n.t("singlePlaylistButtonsAndTitles.deletePlaylist")}
                         bg='#821b24'
                     />
+
+
                 </View>
+                
+                {/* <PlaylistButton 
+                    name='archive' 
+                    onPress={archivePlaylist}
+                    text={i18n.t("singlePlaylistButtonsAndTitles.archive")}
+                    bg='#ef433333'
+                /> */}
             </View>
         ) : <></>}
 

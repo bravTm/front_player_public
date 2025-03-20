@@ -3,7 +3,8 @@ import { View } from 'react-native'
 import { menuItems } from './menu.data'
 import MenuItem from './MenuItem'
 import { TypeNavigate } from './menu.interface'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { height } from 'app/utils/constants'
+// import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface IBottomMenu {
     nav: TypeNavigate
@@ -11,13 +12,13 @@ interface IBottomMenu {
 }
 
 const BottomMenu: FC<IBottomMenu> = (props) => {
-    const { bottom } = useSafeAreaInsets() // число
+    // const { bottom } = useSafeAreaInsets() // число
 
     return (
         <View 
             className='pt-3 flex-row justify-center items-center w-full  dark:bg-[#242222] bg-white'
             style={{
-                paddingBottom: bottom + 10,
+                paddingBottom: 0.007 * height,
             }}
         >
             {menuItems.map(item => (

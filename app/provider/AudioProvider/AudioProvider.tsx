@@ -1,4 +1,5 @@
-import { FC, memo, PropsWithChildren, useCallback, useEffect } from 'react'
+import { FC, PropsWithChildren, useCallback, useEffect } from 'react'
+import React from 'react'
 import { useLang } from 'app/hooks/useLang'
 import { useSongsAndPlaySettings } from 'app/hooks/useSongsAndPlaySettings'
 import { usePlaybackAndAudioPlay } from 'app/hooks/usePlaybackAndAudioPlay'
@@ -8,12 +9,18 @@ import { usePlaylists } from 'app/hooks/usePlaylists'
 import { Audio, InterruptionModeAndroid } from 'expo-av'
 import { pause, playNext } from 'app/components/ui/AudioList/audio.methods'
 import { getPermission } from './permissions-functions'
-import { loadPlaylists, loadPlaySettings, loadPreviousSong } from './loading-functions'
+import { getTopSongs, loadPlaylists, loadPlaySettings, loadPreviousSong } from './loading-functions'
+import { useTopSongs } from 'app/hooks/useTopSongs'
 
+import * as MediaLibrary from "expo-media-library"
+import { useSocket } from 'app/hooks/useSocket'
 
 
 const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
     const { activePlaylist, orderToPlay, setPlaylists } = usePlaylists() 
+    const { topSongs, setTopSongs } = useTopSongs()
+    const { socket } = useSocket()
+
 
     const { i18n } = useLang()
     const { songs, totalCount, setSongs, setTotalCount, setIsRepeatQueue, setIsRepeatSong, isRepeatQueue, isRepeatSong } = useSongsAndPlaySettings()
@@ -41,10 +48,10 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
                 const isSongEnded = (status.didJustFinish || status.positionMillis == status.durationMillis)
 
                 if(activePlaylist &&  isRepeatSong && isSongEnded){
-                    return playNext(playbackObj, currentAudio as any, changeState, activePlaylist?.songs as any, setPlaybackPosition, setPlaybackDuration)
+                    return playNext(playbackObj, currentAudio as any, changeState, activePlaylist?.songs as any, setPlaybackPosition, setPlaybackDuration, null, null, null, topSongs, setTopSongs)
                 }
                 else if(isRepeatSong && isSongEnded){
-                    return playNext(playbackObj, currentAudio as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration)
+                    return playNext(playbackObj, currentAudio as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration, null, null, null, topSongs, setTopSongs)
                 }
 
                 if(!isRepeatQueue && (currentIndex + 1 == orderToPlay?.length || currentIndex + 1 == songs?.length) && isSongEnded) {
@@ -52,19 +59,19 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
                     return pause(playbackObj, changeSoundObj, changeIsPlaying)
                 }
 
-                if(status.didJustFinish || isSongEnded) {
+                if((status.didJustFinish || isSongEnded) && !socket) {
                     if(!activePlaylist || !orderToPlay) {
                         let nextIndex = 0
                         if(currentIndex + 1 == totalCount) nextIndex = 0
                         else nextIndex = currentIndex + 1
     
-                        return playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration)
+                        return playNext(playbackObj, songs[nextIndex] as any, changeState, songs as any, setPlaybackPosition, setPlaybackDuration, null, null, null, topSongs, setTopSongs)
                     }else {
                         let nextIndex = 0
                         if(currentIndex + 1 == orderToPlay.length) nextIndex = 0
                         else nextIndex = currentIndex + 1
     
-                        return playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlaybackPosition, setPlaybackDuration)
+                        return playNext(playbackObj, orderToPlay[nextIndex] as any, changeState, orderToPlay as any, setPlaybackPosition, setPlaybackDuration, null, null, null, topSongs, setTopSongs)
                     }
                 }
             } else if (status.error) {
@@ -87,6 +94,7 @@ const AudioProvider: FC<PropsWithChildren> = ({ children }) => {
         getPermission(i18n, setSongs, setTotalCount)
         loadPreviousSong(songs as any, changeState)
         loadPlaylists(setPlaylists)
+        getTopSongs(setTopSongs)
 
         loadPlaySettings(setIsRepeatQueue, setIsRepeatSong)
     }, []) 

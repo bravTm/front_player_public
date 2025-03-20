@@ -10,11 +10,11 @@
             "light": "Light"
         }
     },
-    "topMenu": {
+    "bottomMenu": {
         "Main": "Home",
         "Playlists": "Playlists",
         "Settings": "Settings",
-        "DownloadMusic": "Download"
+        "SocketComponent": "Connect"
     },
     "permission": {
         "title": "Permission is required",
@@ -32,6 +32,8 @@
         "removeFromPlaylist": "Remove from playlist",
         "shareMusic": "Share",
         "deleteSong": "Delete Song",
+        "listenTogether": "Listen together",
+        "listerTogetherNotification": "The song was selected",
         "back": "Back"
     },
     "musicPlayer": {
@@ -46,12 +48,14 @@
         "blankFieldException": "Title can't be blank"
     },
     "singlePlaylistButtonsAndTitles": {
+        "alertText": "It takes some time to create the zip file",
         "playLine": "Play All",
         "playShuffle": "Shuffle",
         "addSongs": "Add Songs",
         "deletePlaylist": "Delete Playlist",
         "showSettings": "Show settings",
-        "hideSettings": "Hide settings"
+        "hideSettings": "Hide settings",
+        "archive": "Archive"
     },
     "playlists": {
         "emptyPlaylistList": "Create your first playlist"
@@ -62,8 +66,24 @@
         "popUpTrueRepeatQueue": "Song queue is on",
         "popUpFalseRepeatQueue": "Song queue is off"
     },
+    "socket": {
+        "disconnect": "Disconnect",
+        "connect": "Connect",
+        "or": "OR",
+        "allUsers": "Listeners:",
+        "room": "Room",
+        "transferToTheServer": "Transfer to the server",
+        "transferAnotherToTheServer": "Transfer another to the server",
+        "joinRoom": "Join room",
+        "createRoom": "Create room",
+        "roomPlaceholder": "Room name",
+        "downloadSong": "Download Song"
+    },
     "karaokeLyrics": {
         "notFoundLyrics": "Lyrics not found"
+    },
+    "topSongs": {
+        "title": "YOUR TOP SONGS"
     },
     "permissionDeletePlaylist": "Are you sure you want to delete the playlist?",
     "permissionRemoveSongFromPlaylist": "Are you sure you want to remove a song from the playlist?",

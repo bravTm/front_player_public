@@ -4,6 +4,7 @@ import { useTypedNavigation } from 'app/hooks/useTypedNavigation'
 import { useTypedRoute } from 'app/hooks/useTypedRoute'
 import { useLang } from 'app/hooks/useLang'
 import { usePlaylists } from 'app/hooks/usePlaylists'
+import { useSongsAndPlaySettings } from 'app/hooks/useSongsAndPlaySettings'
 
 import Layout from 'app/components/ui/Layout'
 import AddPlaylistAudioItem from 'app/components/ui/AddPlaylistAudioItem/AddPlaylistAudioItem'
@@ -12,7 +13,8 @@ import { setAsyncStorage } from 'app/utils/storage'
 import { ISong } from 'app/types/song.types'
 import { bottomMargin, width } from 'app/utils/constants'
 import { MaterialIcons } from '@expo/vector-icons'
-import { useSongsAndPlaySettings } from 'app/hooks/useSongsAndPlaySettings'
+
+import * as Updates from 'expo-updates';
 
 
 const AddSongsToPlaylist: FC = () => {
@@ -21,6 +23,7 @@ const AddSongsToPlaylist: FC = () => {
     if(!title) return null
 
     let { playlists, songsToAdd, setPlaylists, setSongsToAdd } = usePlaylists()
+
     
     const plst = playlists?.map((item) => {
         if(item.title == title) return item
@@ -34,7 +37,7 @@ const AddSongsToPlaylist: FC = () => {
     const { songs } = useSongsAndPlaySettings()
     const { navigate } = useTypedNavigation()
     const [searchText, setSearchText] = useState("")
-    const playlist = plst[0]
+    const playlist = plst.sort()[0]
     
     // удаление тех, которые уже есть в плейлисте
     const filteredSongs = songs.filter(item => !playlist?.songs.filter(y => y.id === item.id).length)
@@ -62,11 +65,14 @@ const AddSongsToPlaylist: FC = () => {
             return item
         })
 
+
         setPlaylists(playlists)
         setAsyncStorage("playlists", JSON.stringify(playlists))
         setSongsToAdd([])
+        
 
         setTimeout(() => {
+            // Updates.reloadAsync()
             navigate("SinglePlaylist", { title: playlist?.title as any })
         }, 500)
     }

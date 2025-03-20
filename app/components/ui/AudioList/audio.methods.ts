@@ -19,11 +19,15 @@ type TchangeState = (playbackObj: Audio.Sound, soundObj: AVPlaybackStatus, curre
 
 type TsetActivePlstAndIsShuffle =  (activePlaylist: IPlaylist, isShuffle: boolean, orderToPlay: ISong[]) => void
 
+type setTopSongs = React.Dispatch<React.SetStateAction<never[]>>
 
 
 export const play = async (
     audio: ISong, changeState: TchangeState, songs: ISong[], setPlaybackPosition: TsetPlaybackPosition, 
-    setPlaybackDuration: TsetPlaybackDuration,  setActivePlstAndIsShuffle?: TsetActivePlstAndIsShuffle, playlists?: IPlaylist[], playlistTitle?: string
+    //@ts-ignore
+    setPlaybackDuration: TsetPlaybackDuration,  setActivePlstAndIsShuffle: TsetActivePlstAndIsShuffle | null, playlists: IPlaylist[] | null, playlistTitle: string | null,
+    // @ts-ignore
+    topSongs: {id: string, listenCount: number}[], setTopSongs: setTopSongs
 ) => {
     try {
         let initialVolume = 0.1, step = 0.1
@@ -64,6 +68,24 @@ export const play = async (
 
             setActivePlstAndIsShuffle(plst[0] as any, false, plst[0]?.songs as any)
         }
+
+
+        const idTopSong = topSongs.findIndex(item => item.id == audio.id)
+
+        if(idTopSong != -1) {
+            let newTopSongs = topSongs
+            newTopSongs[idTopSong] = {
+                id: audio.id,
+                listenCount: newTopSongs[idTopSong].listenCount + 1
+            }
+            setAsyncStorage("topSongs", JSON.stringify(newTopSongs))
+            setTopSongs(newTopSongs as any)
+        }else {
+            let newTopSongs = [...topSongs, {id: audio.id, listenCount: 1}]
+            setAsyncStorage("topSongs", JSON.stringify(newTopSongs))
+            setTopSongs(newTopSongs as any)
+        }
+
 
         // return clearInterval(inter)
         return
@@ -117,14 +139,17 @@ export const resume = async (
 
 export const playNext = async (
     playbackObj: Audio.Sound | null, audio: ISong, changeState: TchangeState, songs: ISong[], setPlaybackPosition: TsetPlaybackPosition, 
-    setPlaybackDuration: TsetPlaybackDuration, setActivePlstAndIsShuffle?: TsetActivePlstAndIsShuffle, playlists?: IPlaylist[], playlistTitle?: string
+    //@ts-ignore
+    setPlaybackDuration: TsetPlaybackDuration, setActivePlstAndIsShuffle: TsetActivePlstAndIsShuffle | null, playlists: IPlaylist[] | null, playlistTitle: string | null,
+    // @ts-ignore
+    topSongs: {id: string, listenCount: number}[], setTopSongs: setTopSongs
 ) => {
     // playing audio for the first time
     try {
         await playbackObj?.stopAsync()
         await playbackObj?.unloadAsync()
 
-        play(audio, changeState, songs, setPlaybackPosition, setPlaybackDuration, setActivePlstAndIsShuffle, playlists, playlistTitle)
+        play(audio, changeState, songs, setPlaybackPosition, setPlaybackDuration, setActivePlstAndIsShuffle, playlists, playlistTitle, topSongs, setTopSongs)
         return
     } catch(error) {
         console.log("ERROR PLAYNEXT", error)

@@ -5,7 +5,7 @@ import Player from "app/components/screen/Player/Player";
 import Playlists from "app/components/screen/Playlists/Playlists";
 import Settings from "app/components/screen/Settings/Settings";
 import SinglePlaylist from "app/components/screen/SinglePlaylist/SinglePlaylist";
-import Zip from "app/components/screen/Zip/Zip";
+import SocketComponent from "app/components/screen/SocketComponent/SocketComponent";
 
 export const routes = [
     {
@@ -37,7 +37,7 @@ export const routes = [
 		component: KaraokeLyrics,
 	},
 	{
-		name: 'Zip',
-		component: Zip,
+		name: 'SocketComponent',
+		component: SocketComponent,
 	},
 ]

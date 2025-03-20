@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import React, { FC } from 'react'
 import { Modal, Pressable, Text, View } from 'react-native'
 import { useLang } from 'app/hooks/useLang'
 
@@ -12,6 +12,8 @@ import { useColorScheme } from 'nativewind'
 import Line from '../../Line/Line'
 import RemoveFromPlaylist from './MenuMoreItems/RemoveFromPlaylist'
 import DeleteAudioFromDevice from './MenuMoreItems/DeleteAudioFromDevice'
+import { useSocket } from 'app/hooks/useSocket'
+import SelectedSong from './MenuMoreItems/SelectedSong'
 
 interface IMenuMore {
     type: "simple" | "playlist"
@@ -26,6 +28,7 @@ interface IMenuMore {
 const MenuMore: FC<IMenuMore> = ({ type, item, setIsShow }) => {
     const { i18n } = useLang()
     const { colorScheme } = useColorScheme()
+    const { socket } = useSocket()
 
     return (
      <Modal>
@@ -46,6 +49,11 @@ const MenuMore: FC<IMenuMore> = ({ type, item, setIsShow }) => {
             )}
             <ShareMusicItem icon='share' title={i18n.t("menuMore.shareMusic")} uri={item.uri} last/>
             {/* <DeleteAudioFromDevice icon='delete-forever' title={i18n.t("menuMore.deleteSong")} uri={item.uri} last /> */}
+
+            {socket ? (
+                <SelectedSong item={item} icon='check' title={i18n.t("menuMore.listenTogether")} />
+            ) : <></>}
+
 
             <Pressable className='flex-row justify-start items-center mt-[5%]' onPress={() => setIsShow({ state: false, songItem: {} as any })}>
                 <MaterialIcons 

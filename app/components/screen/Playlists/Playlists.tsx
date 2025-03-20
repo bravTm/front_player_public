@@ -44,7 +44,7 @@ const Playlists: FC = () => {
 
         <FlatList 
             ListEmptyComponent={EmptyPlaylistComponent}
-            data={playlists?.reverse()}
+            data={playlists}
             numColumns={2}
             className='mt-[5%]'
             style={{ height: 0.76 * height }}

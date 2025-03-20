@@ -51,6 +51,11 @@ const PlaylistItem: FC<IPlaylistItem> = memo(({ playlist, disabled = false }) =>
             }
         }
     }
+
+    const func = (n: number) => {
+        if(n == 3 || n == 2) return "песни"
+        else return "песен"
+    }
     
 
     return (
@@ -94,7 +99,7 @@ const PlaylistItem: FC<IPlaylistItem> = memo(({ playlist, disabled = false }) =>
                 className='dark:text-light text-dark opacity-50'
                 style={{ fontSize: 0.03* width }}
             >
-                {`${playlist?.songs?.length} songs [${time}]`}
+                {`${playlist?.songs?.length} ${func(playlist?.songs?.length)} [${time}]`}
             </Text>
         </View>
      </TouchableOpacity>

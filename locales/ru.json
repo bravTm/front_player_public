@@ -10,11 +10,11 @@
             "light": "Светлая"
         }
     },
-    "topMenu": {
+    "bottomMenu": {
         "Main": "Главная",
         "Playlists": "Плейлисты",
         "Settings": "Настройки",
-        "DownloadMusic": "Скачивание"
+        "SocketComponent": "Подключение"
     },
     "permission": {
         "title": "Требуется разрешение",
@@ -31,7 +31,9 @@
         "addToPlaylist": "Добавить в плейлист",
         "removeFromPlaylist": "Удалить из плейлиста",
         "shareMusic": "Поделиться",
-        "deleteSong": "Delete Song",
+        "deleteSong": "Удалить песню",
+        "listenTogether": "Прослушать вместе",
+        "listerTogetherNotification": "Песня выбрана",
         "back": "Вернуться"
     },
     "musicPlayer": {
@@ -46,12 +48,14 @@
         "blankFieldException": "Название не может быть пустым"
     },
     "singlePlaylistButtonsAndTitles": {
+        "alertText": "Создание zip файла занимает некоторое время",
         "playLine": "По порядку",
         "playShuffle": "Перемешать",
         "addSongs": "Добавить песни",
         "deletePlaylist": "Удалить плейлист",
         "showSettings": "Показать настройки",
-        "hideSettings": "Скрыть настройки"
+        "hideSettings": "Скрыть настройки",
+        "archive": "Архивировать"
     },
     "playlists": {
         "emptyPlaylistList": "Создайте Ваш первый плейлист"
@@ -62,8 +66,24 @@
         "popUpTrueRepeatQueue": "Повтор очереди включен",
         "popUpFalseRepeatQueue": "Повтор очереди выключен"
     },
+    "socket": {
+        "disconnect": "Отключиться",
+        "connect": "Подключиться",
+        "or": "ИЛИ",
+        "allUsers": "Слушатели:",
+        "room": "Комната",
+        "transferToTheServer": "Отправить на сервер",
+        "transferAnotherToTheServer": "Отправить другое на сервер",
+        "joinRoom": "Присоединиться",
+        "createRoom": "Создать комнату",
+        "roomPlaceholder": "Название",
+        "downloadSong": "Скачать аудио"
+    },
     "karaokeLyrics": {
         "notFoundLyrics": "Текст не найден"
+    },
+    "topSongs": {
+        "title": "ВАШ ТОП ПЕСЕН"
     },
     "permissionDeletePlaylist": "Точно хотите удалить плейлист?",
     "permissionRemoveSongFromPlaylist": "Точно хотите удалить песню из плейлиста?",

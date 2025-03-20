@@ -22,16 +22,19 @@ const DeleteAudioFromDevice: FC<IDeleteAudioFromDevice> = ({ icon, title, uri, l
     const { colorScheme } = useColorScheme()
     const { i18n } = useLang()
 
-    const onDelete = async () => {
-        // console.log("TYT", uri)
-        // await FileSystem.delete(uri, { idempotent: true })
-        // await MediaLibrary.deleteAssetsAsync(uri)
+    async function deleteFileAsync() {
+        try {
+            await FileSystem.deleteAsync(uri);
+            console.log('File deleted successfully');
+        } catch (error) {
+            console.error('Error while deleting file:', error);
+        }
     }
 
     const permissionDeleteSong = () => {
         Alert.alert(i18n.t("permissionDeleteSongFromDevice"), "", [
             { text: i18n.t('cancel') },
-            { text: "OK", onPress: onDelete }
+            { text: "OK", onPress: deleteFileAsync }
         ])
     }
 
